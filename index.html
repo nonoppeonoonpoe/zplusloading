@@ -184,6 +184,16 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .snakebox.open { opacity: 1; visibility: visible; }
 .snakewin { width: min(440px, 100%); transform: scale(0.94); transition: transform 0.3s ease; }
 .snakebox.open .snakewin { transform: none; }
+.snakewin.wide { width: min(700px, 100%); }
+.arcadetabs { display: flex; gap: 6px; padding: 10px 14px 0; }
+.arcadetabs button { font: 700 13px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 6px 12px; cursor: pointer; }
+.arcadetabs button:hover, .arcadetabs button:focus-visible { color: var(--text); outline: none; border-color: var(--edge); }
+.arcadetabs button.on { color: var(--text); background: rgba(150,0,0,0.75); border-color: var(--edge); }
+.danmakubody { padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.danmakuframe { position: relative; width: 640px; height: 480px; max-width: 100%; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08); }
+.danmakuframe iframe { position: absolute; top: -8px; left: -8px; width: 900px; height: 520px; border: 0; }
+.danmakuhint { font-size: 13px; color: var(--dim); text-align: center; }
+.danmakuhint a { color: var(--hot); }
 .snakehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .snaketitle { font-family: var(--logo); font-size: 22px; transform: skewX(-10deg); }
 .snaketitle .r { background: linear-gradient(90deg, #ff2a2a, #ff9a1f, #ffe11f, #36d65a, #2fa8ff, #9a4dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -259,10 +269,18 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 <div class="snakebox" id="snakebox" aria-hidden="true">
   <div class="snakewin panel" role="dialog" aria-label="Snake">
     <div class="snakehead">
-      <div class="snaketitle">Z-<span class="r">SNAKE</span></div>
+      <div class="snaketitle" id="arcadetitle">Z-<span class="r">SNAKE</span></div>
       <button type="button" id="snakeclose" aria-label="Close">&times;</button>
     </div>
-    <div class="snakebody">
+    <div class="arcadetabs">
+      <button type="button" class="on" data-game="snake">Z-Snake</button>
+      <button type="button" data-game="danmaku">Danmaku</button>
+    </div>
+    <div class="danmakubody" id="danmakupane" hidden>
+      <div class="danmakuframe" id="danmakuframe"></div>
+      <div class="danmakuhint">Click the game first. Arrows move, Z shoots, X bombs, Shift slows down.<br>Toho-like STG JS by <a href="https://github.com/takahirox/toho-like-js" target="_blank" rel="noopener">takahirox</a></div>
+    </div>
+    <div class="snakebody" id="snakepane">
       <div class="scores"><span>Score <b id="snakescore">0</b></span><span>Best <b id="snakebest">0</b></span></div>
       <canvas id="snake" width="400" height="400"></canvas>
       <div class="snakehint" id="snakehint">Arrow keys or WASD</div>
@@ -605,7 +623,7 @@ function zcSnakeOver() {
   document.getElementById("snakehint").textContent = "Game over. Press any arrow to go again.";
 }
 function zcTurn(dirName) {
-  if (!zcSnakeBox.classList.contains("open")) return;
+  if (!zcSnakeBox.classList.contains("open") || zcArcade !== "snake") return;
   var want = null;
   if (dirName === "up") want = { x: 0, y: -1 };
   if (dirName === "down") want = { x: 0, y: 1 };
@@ -623,21 +641,62 @@ function zcTurn(dirName) {
   if (want.x === -zcDir.x && want.y === -zcDir.y) return;
   zcNextDir = want;
 }
+/* danmaku tab, the game runs from its own github pages site inside a frame */
+var zcDanmakuUrl = "https://nonoppeonoonpoe.github.io/toho-like-js/index.html";
+var zcArcade = "snake";
+var zcArcadeTabs = document.querySelectorAll(".arcadetabs button");
+function zcStopSnake() {
+  if (zcSnakeLoop) clearInterval(zcSnakeLoop);
+  zcSnakeLoop = null;
+  zcSnakeAlive = false;
+}
+function zcStopDanmaku() {
+  document.getElementById("danmakuframe").innerHTML = "";
+}
+function zcShowArcade(gameName) {
+  zcArcade = gameName;
+  for (var t = 0; t < zcArcadeTabs.length; t++) {
+    zcArcadeTabs[t].classList.toggle("on", zcArcadeTabs[t].getAttribute("data-game") === gameName);
+  }
+  var isDanmaku = gameName === "danmaku";
+  document.getElementById("snakepane").hidden = isDanmaku;
+  document.getElementById("danmakupane").hidden = !isDanmaku;
+  document.querySelector(".snakewin").classList.toggle("wide", isDanmaku);
+  document.getElementById("arcadetitle").innerHTML = isDanmaku ? 'Z-<span class="r">DANMAKU</span>' : 'Z-<span class="r">SNAKE</span>';
+  if (isDanmaku) {
+    zcStopSnake();
+    var frameBox = document.getElementById("danmakuframe");
+    if (!frameBox.firstChild) {
+      var gameFrame = document.createElement("iframe");
+      gameFrame.src = zcDanmakuUrl;
+      gameFrame.title = "Danmaku";
+      gameFrame.setAttribute("scrolling", "no");
+      gameFrame.setAttribute("allow", "autoplay");
+      gameFrame.addEventListener("load", function () { try { gameFrame.contentWindow.focus(); } catch (err) {} });
+      frameBox.appendChild(gameFrame);
+    }
+  } else {
+    zcStopDanmaku();
+    if (!zcSnakeAlive) {
+      zcResetSnake();
+      document.getElementById("snakehint").textContent = "Arrow keys or WASD. Press any arrow to start.";
+    }
+  }
+}
+for (var at = 0; at < zcArcadeTabs.length; at++) {
+  zcArcadeTabs[at].addEventListener("click", function () { zcShowArcade(this.getAttribute("data-game")); });
+}
 function zcOpenSnake() {
   zcSnakeBox.classList.add("open");
   zcSnakeBox.setAttribute("aria-hidden", "false");
-  if (!zcSnakeAlive) {
-    zcResetSnake();
-    document.getElementById("snakehint").textContent = "Arrow keys or WASD. Press any arrow to start.";
-  }
+  zcShowArcade(zcArcade);
   document.getElementById("snakeclose").focus();
 }
 function zcCloseSnake() {
   zcSnakeBox.classList.remove("open");
   zcSnakeBox.setAttribute("aria-hidden", "true");
-  if (zcSnakeLoop) clearInterval(zcSnakeLoop);
-  zcSnakeLoop = null;
-  zcSnakeAlive = false;
+  zcStopSnake();
+  zcStopDanmaku();
 }
 document.getElementById("snakeclose").addEventListener("click", zcCloseSnake);
 zcSnakeBox.addEventListener("click", function (ev) { if (ev.target === zcSnakeBox) zcCloseSnake(); });
@@ -654,7 +713,7 @@ document.addEventListener("keydown", function (ev) {
   if (keyName === "ArrowLeft" || keyName === "a" || keyName === "A") dirName = "left";
   if (keyName === "ArrowRight" || keyName === "d" || keyName === "D") dirName = "right";
   if (keyName === "Escape") { zcCloseSnake(); return; }
-  if (dirName) { ev.preventDefault(); zcTurn(dirName); }
+  if (dirName && zcArcade === "snake") { ev.preventDefault(); zcTurn(dirName); }
 });
 
 var zcInGame = false;
