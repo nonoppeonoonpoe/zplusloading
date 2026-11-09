@@ -1,17 +1,683 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Z-City</title>
-<style>body{background:#111;color:#eee;font:24px sans-serif;display:grid;place-items:center;height:100vh;margin:0}</style>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Polo's Server Loading Screen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Barlow+Semi+Condensed:wght@400;600;700&display=swap">
+<style>
+/* layout: full-bleed art; logo top center, server info top left, modes menu top right, status + facts bottom center, loading ring bottom left */
+:root {
+  --panel: rgba(25, 25, 30, 0.86);
+  --edge: rgba(155, 0, 0, 0.94);
+  --red: #c80000;
+  --hot: #e23b3b;
+  --text: #f2eeee;
+  --dim: #b4adad;
+  --ui: "Bahnschrift", "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --logo: "Russo One", "Bahnschrift", "Arial Black", sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; margin: 0; }
+body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow: hidden; }
+[hidden] { display: none !important; }
+
+.bgstack { position: fixed; inset: 0; overflow: hidden; background: #0b0b0e; }
+.bgstack img {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; object-position: 45% 50%;
+  opacity: 0; transition: opacity 1.6s ease; transform: scale(1.04);
+}
+.bgstack img.show { opacity: 1; animation: drift 24s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: scale(1.04) translateX(0); } to { transform: scale(1.09) translateX(-1.2%); } }
+.shade {
+  position: fixed; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8,8,10,0.78) 0%, rgba(8,8,10,0.15) 32%, rgba(8,8,10,0.1) 60%, rgba(8,8,10,0.82) 100%),
+    radial-gradient(60% 45% at 50% 52%, rgba(8,8,10,0.45), transparent 70%);
+}
+
+.top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 2;
+  display: flex; justify-content: center;
+  padding-top: max(28px, calc(env(safe-area-inset-top, 0px) + 12px));
+  pointer-events: none;
+}
+.logo {
+  font-family: var(--logo); font-size: clamp(44px, 6.4vw, 92px); line-height: 1;
+  letter-spacing: 0.04em; transform: skewX(-10deg); white-space: nowrap;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.45), 0 10px 30px rgba(0,0,0,0.6);
+}
+.logo .z { color: var(--red); }
+.logo .c { color: #ffffff; }
+.logo .plus { color: var(--red); font-size: 0.72em; vertical-align: 0.32em; margin-left: 0.06em; }
+
+.info {
+  position: fixed; z-index: 2; display: flex; flex-direction: column; gap: 4px;
+  top: max(22px, calc(env(safe-area-inset-top, 0px) + 12px));
+  left: max(24px, calc(env(safe-area-inset-left, 0px) + 12px));
+  max-width: calc(50vw - 220px);
+}
+.server { font-size: clamp(20px, 2vw, 28px); font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+.map { font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
+.map b { color: var(--text); font-weight: 600; }
+.ver { font-size: 12px; color: rgba(242,238,238,0.55); text-shadow: 0 2px 8px rgba(0,0,0,0.9); margin-top: 2px; }
+
+/* loading ring + Z */
+.loader {
+  position: fixed; z-index: 2;
+  left: max(24px, calc(env(safe-area-inset-left, 0px) + 12px));
+  bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+}
+.ring { position: relative; width: 120px; height: 120px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ring:focus-visible { outline: 2px solid var(--hot); outline-offset: 4px; border-radius: 50%; }
+.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ring .track { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 5; }
+.ring .done { fill: none; stroke: var(--red); stroke-width: 5; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.35s ease; filter: drop-shadow(0 0 4px rgba(200,0,0,0.6)); }
+.ring .pop { position: absolute; inset: 0; display: grid; place-items: center; }
+.bigz {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--logo); font-size: 58px; line-height: 1;
+  animation: zturn 2.4s linear infinite;
+}
+.bigz span {
+  display: block; padding: 0 4px;
+  background: linear-gradient(0deg, #c80000 0%, #5a0000 25%, #c80000 50%, #5a0000 75%, #c80000 100%);
+  background-size: 100% 200%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: zrise 1.6s linear infinite;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));
+}
+.bigz span.rainbow {
+  position: absolute; opacity: 0; transition: opacity 1.5s ease;
+  background: linear-gradient(0deg, #ff2a2a, #ff9a1f, #ffe11f, #36d65a, #2fa8ff, #9a4dff, #ff2a2a, #ff9a1f, #ffe11f, #36d65a, #2fa8ff, #9a4dff, #ff2a2a);
+  background-size: 100% 200%;
+  -webkit-background-clip: text; background-clip: text;
+}
+.ring.rainbowed .bigz span.rainbow { opacity: 1; }
+.ring.rainbowed .done { animation: hue 3s linear infinite; }
+.ring .wave { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--red); opacity: 0; pointer-events: none; }
+.ring.hit .pop { animation: zpop 0.45s cubic-bezier(.2,1.6,.4,1); }
+.ring.hit .wave { animation: wave 0.6s ease-out; }
+.ring.rainbowed .wave { border-color: #ffe11f; }
+@keyframes zturn { to { transform: rotate(360deg); } }
+@keyframes zrise { from { background-position: 0 0%; } to { background-position: 0 -200%; } }
+@keyframes hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 4px rgba(200,0,0,0.6)); } }
+@keyframes zpop { 0% { transform: scale(1); } 35% { transform: scale(1.3) rotate(-12deg); } 100% { transform: scale(1); } }
+@keyframes wave { from { opacity: 0.9; transform: scale(0.9); } to { opacity: 0; transform: scale(1.6); } }
+
+/* status + facts */
+.bottom {
+  position: fixed; left: 50%; bottom: max(26px, calc(env(safe-area-inset-bottom, 0px) + 12px)); transform: translateX(-50%); z-index: 2;
+  width: min(720px, calc(100vw - 340px)); display: flex; flex-direction: column; gap: 8px;
+}
+.status { font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.9); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status .count { color: var(--dim); font-weight: 400; letter-spacing: 0.04em; text-transform: none; font-variant-numeric: tabular-nums; }
+.panel { background: var(--panel); border: 1.5px solid var(--edge); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box; }
+.facts { padding: 12px 20px; text-align: center; }
+.facts .head { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); margin-bottom: 4px; }
+#fact { font-size: 18px; line-height: 1.35; min-height: 1.35em; transition: opacity 0.4s; }
+#fact.fade { opacity: 0; }
+
+/* modes menu */
+.modes {
+  position: fixed; z-index: 3;
+  top: max(20px, calc(env(safe-area-inset-top, 0px) + 12px));
+  right: max(20px, calc(env(safe-area-inset-right, 0px) + 12px));
+  width: 340px; max-width: calc(100vw - 32px);
+}
+.modes > button {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  font: 700 15px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text);
+  padding: 10px 14px; cursor: pointer; transition: background 0.2s;
+}
+.modes > button:hover, .modes > button:focus-visible { background: rgba(150,0,0,0.85); outline: none; }
+.modes > button .num { color: var(--dim); font-weight: 400; letter-spacing: 0.04em; margin-left: 8px; }
+.modes > button .arrow { transition: transform 0.3s ease; display: inline-block; }
+.modes.open > button .arrow { transform: rotate(180deg); }
+.list {
+  margin-top: -1.5px; max-height: 0; overflow: hidden; opacity: 0;
+  transform: translateY(-6px); transition: max-height 0.45s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.45s;
+  visibility: hidden;
+}
+.modes.open .list { max-height: 62vh; opacity: 1; transform: none; overflow-y: auto; visibility: visible; }
+.group { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hot); padding: 12px 14px 4px; }
+.item { border-top: 1px solid rgba(255,255,255,0.06); opacity: 0; transform: translateX(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
+.modes.open .item { opacity: 1; transform: none; }
+.item button {
+  width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 10px;
+  font: 600 16px var(--ui); color: var(--text); background: none; border: 0; padding: 9px 14px; cursor: pointer;
+  transition: background 0.2s;
+}
+.item button:hover, .item button:focus-visible { background: rgba(150,0,0,0.35); outline: none; }
+.item .kind { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); align-self: center; white-space: nowrap; }
+.item .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.item .more > div { overflow: hidden; }
+.item .more p { margin: 0; padding: 0 14px 12px; font-size: 14px; line-height: 1.4; color: var(--dim); opacity: 0; transition: opacity 0.3s ease; }
+.item.on .more { grid-template-rows: 1fr; }
+.item.on .more p { opacity: 1; }
+.item.on button { background: rgba(150,0,0,0.55); }
+
+/* snake */
+.snakebox {
+  position: fixed; z-index: 10; inset: 0; display: grid; place-items: center;
+  background: rgba(5,5,8,0.55); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.snakebox.open { opacity: 1; visibility: visible; }
+.snakewin { width: min(440px, 100%); transform: scale(0.94); transition: transform 0.3s ease; }
+.snakebox.open .snakewin { transform: none; }
+.snakehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.snaketitle { font-family: var(--logo); font-size: 22px; transform: skewX(-10deg); }
+.snaketitle .r { background: linear-gradient(90deg, #ff2a2a, #ff9a1f, #ffe11f, #36d65a, #2fa8ff, #9a4dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.snakehead button { font: 700 18px var(--ui); color: var(--text); background: none; border: 1.5px solid var(--edge); width: 32px; height: 32px; cursor: pointer; }
+.snakehead button:hover, .snakehead button:focus-visible { background: rgba(150,0,0,0.85); outline: none; }
+.snakebody { padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.scores { display: flex; justify-content: space-between; width: 100%; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
+.scores b { color: var(--text); }
+#snake { width: 100%; max-width: 400px; aspect-ratio: 1; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.08); display: block; box-sizing: border-box; }
+.snakehint { font-size: 13px; color: var(--dim); text-align: center; }
+.pad { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(2, 36px); gap: 4px; }
+.pad button { font: 700 16px var(--ui); color: var(--text); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+.pad button:hover, .pad button:focus-visible { background: rgba(150,0,0,0.6); outline: none; }
+.pad .u { grid-column: 2; grid-row: 1; }
+.pad .l { grid-column: 1; grid-row: 2; }
+.pad .d { grid-column: 2; grid-row: 2; }
+.pad .r { grid-column: 3; grid-row: 2; }
+
+@media (max-width: 760px) {
+  .info { max-width: none; right: max(16px, env(safe-area-inset-right, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); top: 112px; align-items: center; text-align: center; }
+  .modes { left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); width: auto; top: 210px; }
+  .modes.open .list { max-height: 34vh; }
+  .bottom { width: calc(100vw - 32px); bottom: 140px; }
+  .loader { left: 50%; transform: translateX(-50%); }
+  .ring { width: 96px; height: 96px; }
+  .bigz { font-size: 46px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bgstack img.show, .bigz, .bigz span, .ring.hit .pop, .ring.hit .wave, .ring.rainbowed .done { animation: none; }
+  .list, .item, .item .more, .snakebox, .snakewin { transition: none; }
+}
+</style>
 </head>
 <body>
-<div id="info">Connecting…</div>
+
+<div class="bgstack" id="bgstack"></div>
+<div class="shade"></div>
+
+<header class="top">
+  <div class="logo"><span class="z">Z-</span><span class="c">CITY</span><span class="plus">+</span></div>
+</header>
+
+<div class="info">
+  <div class="server" id="server">Polo's Server</div>
+  <div class="map">map <b id="mapname">zb_downtown</b></div>
+  <div class="ver">Z-City Release v1.0 &middot; ZBots 10.25</div>
+</div>
+
+<main class="loader" aria-label="Loading">
+  <div class="ring" id="ring" role="button" tabindex="0" aria-label="Z">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="track" cx="60" cy="60" r="54"></circle>
+      <circle class="done" id="done" cx="60" cy="60" r="54"></circle>
+    </svg>
+    <div class="wave"></div>
+    <div class="pop"><div class="bigz"><span>Z</span><span class="rainbow" aria-hidden="true">Z</span></div></div>
+  </div>
+</main>
+
+<nav class="modes open" id="modes">
+  <button type="button" class="panel" id="modesbtn" aria-expanded="true" aria-controls="modelist"><span>Game modes<span class="num" id="modecount"></span></span><span class="arrow">&#9662;</span></button>
+  <div class="list panel" id="modelist"></div>
+</nav>
+
+<div class="bottom">
+  <div class="status"><span id="status">Retrieving server info</span> <span class="count" id="sub"></span></div>
+  <section class="facts panel">
+    <div class="head">Did you know</div>
+    <div id="fact"></div>
+  </section>
+</div>
+
+<div class="snakebox" id="snakebox" aria-hidden="true">
+  <div class="snakewin panel" role="dialog" aria-label="Snake">
+    <div class="snakehead">
+      <div class="snaketitle">Z-<span class="r">SNAKE</span></div>
+      <button type="button" id="snakeclose" aria-label="Close">&times;</button>
+    </div>
+    <div class="snakebody">
+      <div class="scores"><span>Score <b id="snakescore">0</b></span><span>Best <b id="snakebest">0</b></span></div>
+      <canvas id="snake" width="400" height="400"></canvas>
+      <div class="snakehint" id="snakehint">Arrow keys or WASD. Press any arrow to start.</div>
+      <div class="pad">
+        <button type="button" class="u" data-dir="up" aria-label="Up">&#9650;</button>
+        <button type="button" class="l" data-dir="left" aria-label="Left">&#9664;</button>
+        <button type="button" class="d" data-dir="down" aria-label="Down">&#9660;</button>
+        <button type="button" class="r" data-dir="right" aria-label="Right">&#9654;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  function GameDetails(server, url, map, maxp, steamid, gamemode) {
-    document.getElementById("info").textContent = server + " | " + map + " | " + gamemode;
+/* backgrounds: drop 1.jpg, 2.jpg, 3.jpg ... into the bg folder, the page finds them by itself */
+var zcBgFolder = "bg/";
+var zcBgSeconds = 12;
+var zcBgMax = 50;
+
+var zcModeGroups = [
+  { group: "Social", modes: [
+    { name: "Homicide", kind: "Hidden killer", desc: "Someone in town is a murderer with poisons, explosives and weapons in their pockets. Everyone else has to work out who, or survive until the police arrive." },
+    { name: "Trouble in Z-City", kind: "Traitors", desc: "Traitors hide among the innocents. Bodies, DNA, a tester and a traitor shop decide who walks out." },
+    { name: "Hide & Seek", kind: "Shooter", desc: "Some lunatic has a gun. Bystanders hide and run, and SWAT has to take the shooter out before everyone is dead." }
+  ]},
+  { group: "Hunted", modes: [
+    { name: "Stalker", kind: "1 vs all", desc: "The lights are off and something is hunting the squad. It can't be put down easily, and every kill buys it more time." },
+    { name: "The Machine", kind: "1 vs all", desc: "Something that doesn't bleed is walking the map. SWAT has to stop it before it finishes the job." },
+    { name: "Pathowogen :3", kind: "Infection", desc: "A few of you are already assimilated. The rest have to stay human until the extraction arrives." },
+    { name: "ZS Versus", kind: "Infection", desc: "Humans against player zombies. Patient Zero turns, the bitten follow." }
+  ]},
+  { group: "Co-op", modes: [
+    { name: "Zombie Survival", kind: "Waves", desc: "Hold out against waves of zombies. Barricade, scavenge, and keep each other alive." },
+    { name: "Antlion Containment", kind: "Waves", desc: "Combine against waves of antlions. Hold the sector, keep the thumpers running, don't let the guard through." },
+    { name: "NPC Defense", kind: "Waves", desc: "Hold your ground against waves of Combine or zombies, with bosses and special enemies in the extended version." },
+    { name: "CO-OP", kind: "Campaign", desc: "Work together through a Half-Life 2 map and get to the end of it alive." }
+  ]},
+  { group: "Teams", modes: [
+    { name: "Counter-Strike", kind: "Bomb", desc: "Buy your kit, then plant the bomb or defuse it. First to win more than half the rounds, sides swap at half-time." },
+    { name: "Assassination", kind: "VIP", desc: "One Counter-Terrorist is the VIP. Escort them to the escape zone, or kill them before they get there." },
+    { name: "Crisis Response", kind: "Breach", desc: "Negotiations failed. Suspects fortify the building, and SWAT has to breach it and take them all down before time runs out." },
+    { name: "Team Deathmatch", kind: "Buy menu", desc: "Two teams, a buy menu and one life. Variants include Arms Race, where every two kills moves you to the next gun." },
+    { name: "Gang Wars", kind: "Streets", desc: "Grove Street against the Ballas. Hold your block, grab a car, and watch out when the police show up early." },
+    { name: "Riot", kind: "Streets", desc: "Rioters take the streets, the police have to restore order and arrest them. One variant is a prison break." },
+    { name: "Half-Life 2 Deathmatch", kind: "Combine", desc: "Rebels against the Combine. Rebels have the numbers, Combine have the gear." },
+    { name: "Day of Defeat", kind: "Flags", desc: "Allies against Axis. Capture and hold the flags, the dead come back in waves." },
+    { name: "DoD: TDM", kind: "Last standing", desc: "Day of Defeat's Allies against Axis, one life each. The last side standing wins." },
+    { name: "1995", kind: "Hold / storm", desc: "Federal Forces against Chechen Fighters. Hold the point, or storm it. The dead come back in waves." },
+    { name: "1995: TDM", kind: "Last standing", desc: "The Federal Forces against the Chechens, classic team deathmatch." },
+    { name: "Black October", kind: "Moscow 1993", desc: "Moscow, October 1993. Take down the Mayor, then hold off the storm. The dead come back in waves." },
+    { name: "Imperishable Night", kind: "Three sides", desc: "Kaguya's side against Mokou's, and a third team trying to take down both." }
+  ]},
+  { group: "Free for all", modes: [
+    { name: "Deathmatch", kind: "Everyone", desc: "Kill everyone. Variants include HEV suits for all, and low-gravity snipers where the landings won't hurt." },
+    { name: "Superfighters 3D", kind: "Chaos", desc: "Kill everyone, with crates full of grenades, mines and bombs. One variant is melee only: pipes, axes and crowbars." },
+    { name: "Slug Arena", kind: "Arena", desc: "Small, fast free-for-all. Survive and take out everyone else." }
+  ]}
+];
+
+var zcFacts = [
+  "Spectating a bot? Press G to take over its body.",
+  "Being carried off? Press Space to break free. The more hurt you are, the harder it gets.",
+  "Ragdolled and stuck? Ask a bot to carry you from the radial menu.",
+  "Bots take errands. Tell one to buy you something, or to pick that up.",
+  "Levels, prestige and daily challenges count in every mode.",
+  "Walls and doors muffle sound. If you hear it clearly, it's close."
+];
+
+/* backgrounds */
+var zcStack = document.getElementById("bgstack");
+var zcBgImgs = [];
+var zcBgIndex = 0;
+var zcBgTimer = null;
+function zcFindBackground(number) {
+  if (number > zcBgMax) return;
+  var probe = new Image();
+  probe.onload = function () {
+    probe.alt = "";
+    zcStack.appendChild(probe);
+    zcBgImgs.push(probe);
+    if (zcBgImgs.length === 1) {
+      requestAnimationFrame(function () { probe.className = "show"; });
+    }
+    if (zcBgImgs.length === 2 && zcBgTimer === null) {
+      zcBgTimer = setInterval(zcNextBackground, zcBgSeconds * 1000);
+    }
+    zcFindBackground(number + 1);
+  };
+  probe.src = zcBgFolder + number + ".jpg";
+}
+function zcNextBackground() {
+  zcBgImgs[zcBgIndex].className = "";
+  zcBgIndex = (zcBgIndex + 1) % zcBgImgs.length;
+  zcBgImgs[zcBgIndex].className = "show";
+}
+zcFindBackground(1);
+
+/* modes menu */
+var zcListBox = document.getElementById("modelist");
+var zcModesBox = document.getElementById("modes");
+var zcOpenItem = null;
+var zcModeTotal = 0;
+for (var g = 0; g < zcModeGroups.length; g++) {
+  var groupLabel = document.createElement("div");
+  groupLabel.className = "group";
+  groupLabel.textContent = zcModeGroups[g].group;
+  zcListBox.appendChild(groupLabel);
+  for (var m = 0; m < zcModeGroups[g].modes.length; m++) {
+    (function (modeInfo, delayMs) {
+      var row = document.createElement("div");
+      row.className = "item";
+      row.style.transitionDelay = delayMs + "ms";
+      var rowBtn = document.createElement("button");
+      rowBtn.type = "button";
+      rowBtn.setAttribute("aria-expanded", "false");
+      var nameSpan = document.createElement("span");
+      nameSpan.textContent = modeInfo.name;
+      var kindSpan = document.createElement("span");
+      kindSpan.className = "kind";
+      kindSpan.textContent = modeInfo.kind;
+      rowBtn.appendChild(nameSpan);
+      rowBtn.appendChild(kindSpan);
+      var moreBox = document.createElement("div");
+      moreBox.className = "more";
+      var moreInner = document.createElement("div");
+      var descText = document.createElement("p");
+      descText.textContent = modeInfo.desc;
+      moreInner.appendChild(descText);
+      moreBox.appendChild(moreInner);
+      rowBtn.addEventListener("click", function () {
+        if (zcOpenItem && zcOpenItem !== row) {
+          zcOpenItem.classList.remove("on");
+          zcOpenItem.firstChild.setAttribute("aria-expanded", "false");
+        }
+        var opening = !row.classList.contains("on");
+        row.classList.toggle("on", opening);
+        rowBtn.setAttribute("aria-expanded", opening ? "true" : "false");
+        zcOpenItem = opening ? row : null;
+      });
+      row.appendChild(rowBtn);
+      row.appendChild(moreBox);
+      zcListBox.appendChild(row);
+    })(zcModeGroups[g].modes[m], Math.min(zcModeTotal * 25, 500));
+    zcModeTotal++;
   }
-  function SetStatusChanged(status) {
-    document.getElementById("info").textContent = status;
+}
+document.getElementById("modecount").textContent = zcModeTotal;
+zcListBox.querySelector(".item button").click();
+function zcSetModesOpen(isOpen) {
+  zcModesBox.classList.toggle("open", isOpen);
+  document.getElementById("modesbtn").setAttribute("aria-expanded", isOpen ? "true" : "false");
+}
+if (window.innerWidth <= 760) zcSetModesOpen(false);
+document.getElementById("modesbtn").addEventListener("click", function () {
+  zcSetModesOpen(!zcModesBox.classList.contains("open"));
+});
+
+/* facts */
+var zcFactBox = document.getElementById("fact");
+var zcFactIndex = Math.floor(Math.random() * zcFacts.length);
+function zcNextFact() {
+  zcFactBox.className = "fade";
+  setTimeout(function () {
+    zcFactBox.textContent = zcFacts[zcFactIndex];
+    zcFactIndex = (zcFactIndex + 1) % zcFacts.length;
+    zcFactBox.className = "";
+  }, 400);
+}
+zcFactBox.textContent = zcFacts[zcFactIndex];
+zcFactIndex = (zcFactIndex + 1) % zcFacts.length;
+setInterval(zcNextFact, 8000);
+
+/* loading ring */
+var zcRing = document.getElementById("done");
+var zcRingLen = 2 * Math.PI * 54;
+zcRing.style.strokeDasharray = zcRingLen;
+zcRing.style.strokeDashoffset = zcRingLen;
+var zcFilesTotal = 0;
+var zcFilesNeeded = 0;
+var zcFileName = "";
+function zcDraw() {
+  var part = 0;
+  if (zcFilesTotal > 0) part = (zcFilesTotal - zcFilesNeeded) / zcFilesTotal;
+  if (part < 0) part = 0;
+  if (part > 1) part = 1;
+  zcRing.style.strokeDashoffset = zcRingLen * (1 - part);
+  var line = "";
+  if (zcFilesTotal > 0 && zcFilesNeeded > 0) line = "· " + (zcFilesTotal - zcFilesNeeded) + " / " + zcFilesTotal + " files";
+  if (zcFileName !== "" && zcFilesNeeded > 0) line = line + " · " + zcFileName;
+  document.getElementById("sub").textContent = line;
+}
+
+/* sounds */
+var zcVolume = 0.6;
+var zcAudio = null;
+function zcTone(type, startHz, endHz, length, loud, wait) {
+  setTimeout(function () {
+    try {
+      if (!zcAudio) zcAudio = new (window.AudioContext || window.webkitAudioContext)();
+      var t = zcAudio.currentTime;
+      var osc = zcAudio.createOscillator();
+      var gain = zcAudio.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(startHz, t);
+      if (endHz !== startHz) osc.frequency.exponentialRampToValueAtTime(endHz, t + length * 0.4);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(loud * zcVolume + 0.0001, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + length);
+      osc.connect(gain);
+      gain.connect(zcAudio.destination);
+      osc.start(t);
+      osc.stop(t + length + 0.05);
+    } catch (err) {}
+  }, wait || 0);
+}
+function zcChime() {
+  var notes = [523, 659, 784, 1047];
+  for (var n = 0; n < notes.length; n++) zcTone("triangle", notes[n], notes[n], 0.35, 0.2, n * 90);
+}
+
+/* Z easter egg */
+var zcClicks = [];
+var zcRainbow = false;
+var zcZRing = document.getElementById("ring");
+function zcHitZ() {
+  var nowMs = Date.now();
+  zcClicks.push(nowMs);
+  while (zcClicks.length > 0 && nowMs - zcClicks[0] > 3000) zcClicks.shift();
+  var pitchStep = Math.min(zcClicks.length, 6);
+  zcTone("square", 180 + pitchStep * 60, (180 + pitchStep * 60) * 2.4, 0.22, 0.25);
+  zcZRing.classList.remove("hit");
+  void zcZRing.offsetWidth;
+  zcZRing.classList.add("hit");
+  if (zcClicks.length >= 5) {
+    zcClicks = [];
+    zcRainbow = !zcRainbow;
+    zcZRing.classList.toggle("rainbowed", zcRainbow);
+    if (zcRainbow) {
+      zcChime();
+      setTimeout(zcOpenSnake, 700);
+    }
   }
+}
+zcZRing.addEventListener("click", zcHitZ);
+zcZRing.addEventListener("keydown", function (ev) {
+  if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); zcHitZ(); }
+});
+
+/* snake */
+var zcSnakeBox = document.getElementById("snakebox");
+var zcCanvas = document.getElementById("snake");
+var zcPen = zcCanvas.getContext("2d");
+var zcCells = 20;
+var zcCellSize = zcCanvas.width / zcCells;
+var zcSnake = [];
+var zcDir = { x: 1, y: 0 };
+var zcNextDir = { x: 1, y: 0 };
+var zcFood = { x: 10, y: 10 };
+var zcScore = 0;
+var zcBest = 0;
+var zcSnakeLoop = null;
+var zcSnakeAlive = false;
+var zcHueShift = 0;
+try { zcBest = parseInt(localStorage.getItem("zplus_snake_best") || "0", 10) || 0; } catch (err) {}
+document.getElementById("snakebest").textContent = zcBest;
+
+function zcResetSnake() {
+  zcSnake = [{ x: 8, y: 10 }, { x: 7, y: 10 }, { x: 6, y: 10 }];
+  zcDir = { x: 1, y: 0 };
+  zcNextDir = { x: 1, y: 0 };
+  zcScore = 0;
+  document.getElementById("snakescore").textContent = "0";
+  zcPlaceFood();
+  zcDrawSnake();
+}
+function zcPlaceFood() {
+  var spotFree = false;
+  while (!spotFree) {
+    zcFood = { x: Math.floor(Math.random() * zcCells), y: Math.floor(Math.random() * zcCells) };
+    spotFree = true;
+    for (var p = 0; p < zcSnake.length; p++) {
+      if (zcSnake[p].x === zcFood.x && zcSnake[p].y === zcFood.y) spotFree = false;
+    }
+  }
+}
+function zcDrawSnake() {
+  zcPen.clearRect(0, 0, zcCanvas.width, zcCanvas.height);
+  zcPen.fillStyle = "rgba(255,255,255,0.03)";
+  for (var gx = 0; gx < zcCells; gx++) {
+    for (var gy = 0; gy < zcCells; gy++) {
+      if ((gx + gy) % 2 === 0) zcPen.fillRect(gx * zcCellSize, gy * zcCellSize, zcCellSize, zcCellSize);
+    }
+  }
+  zcPen.fillStyle = "#ffffff";
+  zcPen.font = Math.floor(zcCellSize * 0.95) + "px 'Russo One', sans-serif";
+  zcPen.textAlign = "center";
+  zcPen.textBaseline = "middle";
+  zcPen.fillText("+", zcFood.x * zcCellSize + zcCellSize / 2, zcFood.y * zcCellSize + zcCellSize / 2 + 1);
+  for (var s = 0; s < zcSnake.length; s++) {
+    var segHue = (zcHueShift + s * 14) % 360;
+    zcPen.fillStyle = "hsl(" + segHue + ", 90%, 55%)";
+    zcPen.fillRect(zcSnake[s].x * zcCellSize + 1, zcSnake[s].y * zcCellSize + 1, zcCellSize - 2, zcCellSize - 2);
+  }
+}
+function zcSnakeStep() {
+  zcDir = zcNextDir;
+  var headNow = zcSnake[0];
+  var newHead = { x: headNow.x + zcDir.x, y: headNow.y + zcDir.y };
+  var hitWall = newHead.x < 0 || newHead.y < 0 || newHead.x >= zcCells || newHead.y >= zcCells;
+  var hitSelf = false;
+  for (var q = 0; q < zcSnake.length - 1; q++) {
+    if (zcSnake[q].x === newHead.x && zcSnake[q].y === newHead.y) hitSelf = true;
+  }
+  if (hitWall || hitSelf) {
+    zcSnakeOver();
+    return;
+  }
+  zcSnake.unshift(newHead);
+  if (newHead.x === zcFood.x && newHead.y === zcFood.y) {
+    zcScore++;
+    document.getElementById("snakescore").textContent = zcScore;
+    zcTone("square", 500 + zcScore * 15, 900 + zcScore * 15, 0.12, 0.15);
+    if (zcScore > zcBest) {
+      zcBest = zcScore;
+      document.getElementById("snakebest").textContent = zcBest;
+      try { localStorage.setItem("zplus_snake_best", String(zcBest)); } catch (err) {}
+    }
+    zcPlaceFood();
+  } else {
+    zcSnake.pop();
+  }
+  zcHueShift = (zcHueShift + 6) % 360;
+  zcDrawSnake();
+}
+function zcSnakeOver() {
+  clearInterval(zcSnakeLoop);
+  zcSnakeLoop = null;
+  zcSnakeAlive = false;
+  zcTone("sawtooth", 220, 70, 0.5, 0.2);
+  document.getElementById("snakehint").textContent = "Game over. Press any arrow to go again.";
+}
+function zcTurn(dirName) {
+  if (!zcSnakeBox.classList.contains("open")) return;
+  var want = null;
+  if (dirName === "up") want = { x: 0, y: -1 };
+  if (dirName === "down") want = { x: 0, y: 1 };
+  if (dirName === "left") want = { x: -1, y: 0 };
+  if (dirName === "right") want = { x: 1, y: 0 };
+  if (!want) return;
+  if (!zcSnakeAlive) {
+    zcResetSnake();
+    zcSnakeAlive = true;
+    zcNextDir = (want.x === -1) ? { x: 1, y: 0 } : want;
+    document.getElementById("snakehint").textContent = "Eat the + signs. Don't hit the walls or yourself.";
+    zcSnakeLoop = setInterval(zcSnakeStep, 110);
+    return;
+  }
+  if (want.x === -zcDir.x && want.y === -zcDir.y) return;
+  zcNextDir = want;
+}
+function zcOpenSnake() {
+  zcSnakeBox.classList.add("open");
+  zcSnakeBox.setAttribute("aria-hidden", "false");
+  if (!zcSnakeAlive) {
+    zcResetSnake();
+    document.getElementById("snakehint").textContent = "Arrow keys or WASD. Press any arrow to start.";
+  }
+  document.getElementById("snakeclose").focus();
+}
+function zcCloseSnake() {
+  zcSnakeBox.classList.remove("open");
+  zcSnakeBox.setAttribute("aria-hidden", "true");
+  if (zcSnakeLoop) clearInterval(zcSnakeLoop);
+  zcSnakeLoop = null;
+  zcSnakeAlive = false;
+}
+document.getElementById("snakeclose").addEventListener("click", zcCloseSnake);
+zcSnakeBox.addEventListener("click", function (ev) { if (ev.target === zcSnakeBox) zcCloseSnake(); });
+var zcPadBtns = document.querySelectorAll(".pad button");
+for (var pb = 0; pb < zcPadBtns.length; pb++) {
+  zcPadBtns[pb].addEventListener("click", function () { zcTurn(this.getAttribute("data-dir")); });
+}
+document.addEventListener("keydown", function (ev) {
+  if (!zcSnakeBox.classList.contains("open")) return;
+  var keyName = ev.key;
+  var dirName = null;
+  if (keyName === "ArrowUp" || keyName === "w" || keyName === "W") dirName = "up";
+  if (keyName === "ArrowDown" || keyName === "s" || keyName === "S") dirName = "down";
+  if (keyName === "ArrowLeft" || keyName === "a" || keyName === "A") dirName = "left";
+  if (keyName === "ArrowRight" || keyName === "d" || keyName === "D") dirName = "right";
+  if (keyName === "Escape") { zcCloseSnake(); return; }
+  if (dirName) { ev.preventDefault(); zcTurn(dirName); }
+});
+
+/* gmod hooks */
+var zcInGame = false;
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode, volume) {
+  if (!zcInGame) { zcFilesTotal = 0; zcFilesNeeded = 0; zcFileName = ""; zcDraw(); }
+  zcInGame = true;
+  if (typeof volume === "number") zcVolume = volume;
+  document.getElementById("server").textContent = servername;
+  document.getElementById("mapname").textContent = mapname;
+}
+function SetStatusChanged(statusText) { zcInGame = true; document.getElementById("status").textContent = statusText.replace(/\.+$/, ""); }
+function SetFilesTotal(total) { zcInGame = true; zcFilesTotal = total; zcDraw(); }
+function SetFilesNeeded(needed) { zcInGame = true; zcFilesNeeded = needed; zcDraw(); }
+function DownloadingFile(fileName) { zcInGame = true; zcFileName = fileName.split("/").pop(); zcDraw(); }
+
+/* fake join when opened outside the game */
+var zcFakeFiles = ["metrocop_gear.mdl", "ambient3.mp3", "stalker_vignette.vtf", "zb_downtown.ain", "sector_lockdown.wav", "w_oicw.mdl"];
+var zcFakeStatus = ["Retrieving server info", "Workshop complete", "Downloading files", "Loading resources", "Starting Lua", "Sending client info"];
+setTimeout(function () {
+  if (zcInGame) return;
+  var tick = 0;
+  zcFilesTotal = 186; zcFilesNeeded = 186;
+  var fakeLoop = setInterval(function () {
+    if (zcInGame) { clearInterval(fakeLoop); return; }
+    tick++;
+    if (zcFilesNeeded > 0) {
+      zcFilesNeeded = Math.max(0, zcFilesNeeded - Math.ceil(Math.random() * 3));
+      zcFileName = zcFakeFiles[tick % zcFakeFiles.length];
+      document.getElementById("status").textContent = zcFakeStatus[Math.min(2, Math.floor(tick / 5))];
+    } else {
+      zcFileName = "";
+      var stage = 3 + Math.floor((tick % 30) / 10);
+      document.getElementById("status").textContent = zcFakeStatus[Math.min(zcFakeStatus.length - 1, stage)];
+      if (tick % 30 === 29) zcFilesNeeded = zcFilesTotal;
+    }
+    zcDraw();
+  }, 260);
+}, 1200);
 </script>
 </body>
 </html>
