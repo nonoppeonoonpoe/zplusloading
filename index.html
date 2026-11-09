@@ -22,9 +22,9 @@ html, body { height: 100%; margin: 0; }
 body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow: hidden; }
 [hidden] { display: none !important; }
 
-.bgstack { position: fixed; inset: 0; overflow: hidden; background: #0b0b0e; }
+.bgstack { position: fixed; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; background: #0b0b0e; }
 .bgstack .slide {
-  position: absolute; inset: 0; overflow: hidden;
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden;
   transform: translateX(100%); visibility: hidden;
   transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1);
 }
@@ -34,14 +34,14 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .bgstack .slide.out { transform: translateX(-100%); visibility: visible; }
 .bgstack .slide.park { transition: none; }
 .bgstack img {
-  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; max-width: none;
   object-fit: cover; object-position: 45% 50%;
   transform: scale(1.04);
 }
 .bgstack .slide.show img { animation: drift 24s ease-in-out infinite alternate; }
 @keyframes drift { from { transform: scale(1.04) translateX(0); } to { transform: scale(1.09) translateX(-1.2%); } }
 .shade {
-  position: fixed; inset: 0; pointer-events: none;
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none;
   background:
     linear-gradient(180deg, rgba(8,8,10,0.78) 0%, rgba(8,8,10,0.15) 32%, rgba(8,8,10,0.1) 60%, rgba(8,8,10,0.82) 100%),
     radial-gradient(60% 45% at 50% 52%, rgba(8,8,10,0.45), transparent 70%);
@@ -80,12 +80,12 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 }
 .ring { position: relative; width: 120px; height: 120px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .ring:focus-visible { outline: 2px solid var(--hot); outline-offset: 4px; border-radius: 50%; }
-.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ring svg { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
 .ring .track { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 5; }
 .ring .done { fill: none; stroke: var(--red); stroke-width: 5; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.35s ease; filter: drop-shadow(0 0 4px rgba(200,0,0,0.6)); }
-.ring .pop { position: absolute; inset: 0; display: grid; place-items: center; }
+.ring .pop { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center; }
 .bigz {
-  position: absolute; inset: 0; display: grid; place-items: center;
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center;
   font-family: var(--logo); font-size: 58px; line-height: 1;
   animation: zturn 2.4s linear infinite;
 }
@@ -105,7 +105,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 }
 .ring.rainbowed .bigz span.rainbow { opacity: 1; }
 .ring.rainbowed .done { animation: hue 3s linear infinite; }
-.ring .wave { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--red); opacity: 0; pointer-events: none; }
+.ring .wave { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 50%; border: 3px solid var(--red); opacity: 0; pointer-events: none; }
 .ring.hit .pop { animation: zpop 0.45s cubic-bezier(.2,1.6,.4,1); }
 .ring.hit .wave { animation: wave 0.6s ease-out; }
 .ring.rainbowed .wave { border-color: #ffe11f; }
@@ -177,7 +177,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 
 /* snake */
 .snakebox {
-  position: fixed; z-index: 10; inset: 0; display: grid; place-items: center;
+  position: fixed; z-index: 10; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center;
   background: rgba(5,5,8,0.55); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
