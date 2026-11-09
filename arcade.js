@@ -142,7 +142,7 @@ function zcTurn(dirName) {
   zcNextDir = want;
 }
 /* jstouhou tab, the game runs from its own github pages site (my-touhou) inside a frame */
-var zcDanmakuUrl = "https://nonoppeonoonpoe.github.io/my-touhou/index.html";
+var zcDanmakuUrl = "https://nonoppeonoonpoe.github.io/my-touhou/index.html?embed";
 var zcArcade = "danmaku";
 var zcArcadeTabs = document.querySelectorAll(".arcadetabs button");
 function zcStopSnake() {
