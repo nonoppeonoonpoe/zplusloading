@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Z-City+ Arcade</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Barlow+Semi+Condensed:wght@400;600;700&display=swap">
+<style>
+:root {
+  --panel: rgba(25, 25, 30, 0.86);
+  --edge: rgba(155, 0, 0, 0.94);
+  --red: #c80000;
+  --hot: #e23b3b;
+  --text: #f2eeee;
+  --dim: #b4adad;
+  --ui: "Bahnschrift", "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --logo: "Russo One", "Bahnschrift", "Arial Black", sans-serif;
+  color-scheme: dark;
+}
+html, body { margin: 0; min-height: 100%; }
+body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow: hidden; }
+[hidden] { display: none !important; }
+.bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: #0b0b0e url("../bg/1.jpg") center / cover no-repeat; filter: blur(6px) brightness(0.4); transform: scale(1.05); }
+.stage { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box; }
+.panel { background: var(--panel); border: 1.5px solid var(--edge); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box; }
+/* snake */
+.snakebox {
+  position: fixed; z-index: 10; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center;
+  background: rgba(5,5,8,0.55); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.snakebox.open { opacity: 1; visibility: visible; }
+.snakewin { width: min(440px, 100%); transform: scale(0.94); transition: transform 0.3s ease; }
+.snakebox.open .snakewin { transform: none; }
+.snakewin.wide { width: min(700px, 100%); }
+.arcadetabs { display: flex; gap: 6px; padding: 10px 14px 0; }
+.arcadetabs button { font: 700 13px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 6px 12px; cursor: pointer; }
+.arcadetabs button:hover, .arcadetabs button:focus-visible { color: var(--text); outline: none; border-color: var(--edge); }
+.arcadetabs button.on { color: var(--text); background: rgba(150,0,0,0.75); border-color: var(--edge); }
+.danmakubody { padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.danmakuframe { position: relative; width: 640px; height: 480px; max-width: 100%; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08); }
+.danmakuframe iframe { position: absolute; top: -8px; left: -8px; width: 900px; height: 520px; border: 0; }
+.danmakuhint { font-size: 13px; color: var(--dim); text-align: center; }
+.danmakuhint a { color: var(--hot); }
+.snakehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.snaketitle { font-family: var(--logo); font-size: 22px; transform: skewX(-10deg); }
+.snaketitle .r { background: linear-gradient(90deg, #ff2a2a, #ff9a1f, #ffe11f, #36d65a, #2fa8ff, #9a4dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.snakehead button { font: 700 18px var(--ui); color: var(--text); background: none; border: 1.5px solid var(--edge); width: 32px; height: 32px; cursor: pointer; }
+.snakehead button:hover, .snakehead button:focus-visible { background: rgba(150,0,0,0.85); outline: none; }
+.snakebody { padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.scores { display: flex; justify-content: space-between; width: 100%; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
+.scores b { color: var(--text); }
+#snake { width: 100%; max-width: 400px; aspect-ratio: 1; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.08); display: block; box-sizing: border-box; }
+.snakehint { font-size: 13px; color: var(--dim); text-align: center; }
+.pad { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(2, 36px); gap: 4px; }
+.pad button { font: 700 16px var(--ui); color: var(--text); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+.pad button:hover, .pad button:focus-visible { background: rgba(150,0,0,0.6); outline: none; }
+.pad .u { grid-column: 2; grid-row: 1; }
+.pad .l { grid-column: 1; grid-row: 2; }
+.pad .d { grid-column: 2; grid-row: 2; }
+.pad .r { grid-column: 3; grid-row: 2; }
+
+.stage .snakewin { transform: none; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="stage">
+  <div class="snakewin panel" role="dialog" aria-label="Arcade">
+    <div class="snakehead">
+      <div class="snaketitle" id="arcadetitle">JS<span class="r">TOUHOU</span></div>
+    </div>
+    <div class="arcadetabs">
+      <button type="button" class="on" data-game="danmaku">JSTouhou</button>
+      <button type="button" data-game="snake">Z-Snake</button>
+    </div>
+    <div class="danmakubody" id="danmakupane" hidden>
+      <div class="danmakuframe" id="danmakuframe"></div>
+      <div class="danmakuhint">Click the game first. Arrows move, Z shoots, X bombs, Shift slows down.<br>JSTouhou, based on toho-like-js by <a href="https://github.com/takahirox/toho-like-js" target="_blank" rel="noopener">takahirox</a></div>
+    </div>
+    <div class="snakebody" id="snakepane">
+      <div class="scores"><span>Score <b id="snakescore">0</b></span><span>Best <b id="snakebest">0</b></span></div>
+      <canvas id="snake" width="400" height="400"></canvas>
+      <div class="snakehint" id="snakehint">Arrow keys or WASD</div>
+      <div class="pad">
+        <button type="button" class="u" data-dir="up" aria-label="Up">&#9650;</button>
+        <button type="button" class="l" data-dir="left" aria-label="Left">&#9664;</button>
+        <button type="button" class="d" data-dir="down" aria-label="Down">&#9660;</button>
+        <button type="button" class="r" data-dir="right" aria-label="Right">&#9654;</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../arcade.js"></script>
+<script>
+zcShowArcade(zcArcade);
+</script>
+</body>
+</html>
