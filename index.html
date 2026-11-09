@@ -145,19 +145,29 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .group { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hot); padding: 12px 14px 4px; }
 .item { border-top: 1px solid rgba(255,255,255,0.06); opacity: 0; transform: translateX(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
 .modes.open .item { opacity: 1; transform: none; }
-.item button {
+.item > button {
   width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 10px;
   font: 600 16px var(--ui); color: var(--text); background: none; border: 0; padding: 9px 14px; cursor: pointer;
   transition: background 0.2s;
 }
-.item button:hover, .item button:focus-visible { background: rgba(150,0,0,0.35); outline: none; }
+.item > button:hover, .item > button:focus-visible { background: rgba(150,0,0,0.35); outline: none; }
 .item .kind { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); align-self: center; white-space: nowrap; }
 .item .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
 .item .more > div { overflow: hidden; }
 .item .more p { margin: 0; padding: 0 14px 12px; font-size: 14px; line-height: 1.4; color: var(--dim); opacity: 0; transition: opacity 0.3s ease; }
 .item.on .more { grid-template-rows: 1fr; }
 .item.on .more p { opacity: 1; }
-.item.on button { background: rgba(150,0,0,0.55); }
+.item .more p.swap { opacity: 0; }
+.subs { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
+.subs button {
+  width: auto; display: inline-block; font: 600 12px var(--ui); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--dim); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); padding: 4px 9px; cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.subs button:hover, .subs button:focus-visible { color: var(--text); border-color: var(--edge); background: rgba(150,0,0,0.3); outline: none; }
+.subs button.pick, .item.on .subs button.pick { color: var(--text); background: rgba(150,0,0,0.75); border-color: var(--edge); }
+.item .subcount { color: var(--hot); margin-right: 8px; }
+.item.on > button { background: rgba(150,0,0,0.55); }
 
 /* snake */
 .snakebox {
@@ -268,8 +278,15 @@ var zcBgMax = 50;
 
 var zcModeGroups = [
   { group: "Social", modes: [
-    { name: "Homicide", kind: "Hidden killer", desc: "Someone in town is a murderer with poisons, explosives and weapons in their pockets. Everyone else has to work out who, or survive until the police arrive." },
-    { name: "Trouble in Z-City", kind: "Traitors", desc: "Traitors hide among the innocents. Bodies, DNA, a tester and a traitor shop decide who walks out." },
+    { name: "Homicide", kind: "Hidden killer", desc: "Someone in town is a murderer with poisons, explosives and weapons in their pockets. Everyone else has to work out who, or survive until the police arrive.",
+      subs: [
+        { name: "Partners", desc: "Two traitors who know each other and share a radio channel." },
+        { name: "Classic", desc: "The murderer has only a knife, the sheriff a revolver with a single round." }
+      ] },
+    { name: "Trouble in Z-City", kind: "Traitors", desc: "Traitors hide among the innocents. Bodies, DNA, a tester and a traitor shop decide who walks out.",
+      subs: [
+        { name: "No Shop", desc: "No credits shop. Traitors start with a knife, a silenced pistol and a smoke grenade." }
+      ] },
     { name: "Hide & Seek", kind: "Shooter", desc: "Some lunatic has a gun. Bystanders hide and run, and SWAT has to take the shooter out before everyone is dead." }
   ]},
   { group: "Hunted", modes: [
@@ -279,28 +296,65 @@ var zcModeGroups = [
     { name: "ZS Versus", kind: "Infection", desc: "Humans against player zombies. Patient Zero turns, the bitten follow." }
   ]},
   { group: "Co-op", modes: [
-    { name: "Zombie Survival", kind: "Waves", desc: "Hold out against waves of zombies. Barricade, scavenge, and keep each other alive." },
+    { name: "Zombie Survival", kind: "Waves", desc: "Hold out against waves of zombies. Barricade, scavenge, and keep each other alive.",
+      subs: [
+        { name: "Nights", desc: "Days to scavenge, nights to survive. On the last night, hold out for extraction." }
+      ] },
     { name: "Antlion Containment", kind: "Waves", desc: "Combine against waves of antlions. Hold the sector, keep the thumpers running, don't let the guard through." },
     { name: "NPC Defense", kind: "Waves", desc: "Hold your ground against waves of Combine or zombies, with bosses and special enemies in the extended version." },
     { name: "CO-OP", kind: "Campaign", desc: "Work together through a Half-Life 2 map and get to the end of it alive." }
   ]},
   { group: "Teams", modes: [
-    { name: "Counter-Strike", kind: "Bomb", desc: "Buy your kit, then plant the bomb or defuse it. First to win more than half the rounds, sides swap at half-time." },
+    { name: "Counter-Strike", kind: "Bomb", desc: "Buy your kit, then plant the bomb or defuse it. One life a round.",
+      subs: [
+        { name: "Competitive Match", desc: "First to win more than half the rounds. Sides swap at half-time." }
+      ] },
     { name: "Assassination", kind: "VIP", desc: "One Counter-Terrorist is the VIP. Escort them to the escape zone, or kill them before they get there." },
-    { name: "Crisis Response", kind: "Breach", desc: "Negotiations failed. Suspects fortify the building, and SWAT has to breach it and take them all down before time runs out." },
-    { name: "Team Deathmatch", kind: "Buy menu", desc: "Two teams, a buy menu and one life. Variants include Arms Race, where every two kills moves you to the next gun." },
-    { name: "Gang Wars", kind: "Streets", desc: "Grove Street against the Ballas. Hold your block, grab a car, and watch out when the police show up early." },
-    { name: "Riot", kind: "Streets", desc: "Rioters take the streets, the police have to restore order and arrest them. One variant is a prison break." },
-    { name: "Half-Life 2 Deathmatch", kind: "Combine", desc: "Rebels against the Combine. Rebels have the numbers, Combine have the gear." },
+    { name: "Crisis Response", kind: "Breach", desc: "Negotiations failed. Suspects fortify the building, and SWAT has to breach it and take them all down before time runs out.",
+      subs: [
+        { name: "Barricade", desc: "The suspects came prepared. SWAT must breach the building and take down every suspect before time runs out." },
+        { name: "Hostage Rescue", desc: "The suspects have taken someone hostage, SWAT has to rescue them." }
+      ] },
+    { name: "Team Deathmatch", kind: "Buy menu", desc: "Two teams, a buy menu and one life.",
+      subs: [
+        { name: "No Buy", desc: "No buy menu. Every team gets the same rifle, pistol and armor." },
+        { name: "Close Quarters", desc: "Pistols, SMGs and shotguns only." },
+        { name: "Arms Race", desc: "Every 2 kills on an enemy moves you to the next gun. The first kill with the last gun wins." }
+      ] },
+    { name: "Gang Wars", kind: "Streets", desc: "Grove Street against the Ballas. Hold your block, grab a car, and settle it.",
+      subs: [
+        { name: "Street Fight", desc: "Melee only. Fists, bats and whatever else is lying around." },
+        { name: "Heat", desc: "The police were notified of what's about to happen. They are coming early, and they are bringing backup." }
+      ] },
+    { name: "Riot", kind: "Streets", desc: "Rioters take the streets, the police have to restore order and arrest them.",
+      subs: [
+        { name: "Prison Riot", desc: "Prisoners start unarmed, with loot scattered all over the map. Fewer guards, but they carry pistols." },
+        { name: "HL2 Riot", desc: "Civil Protection against an unarmed uprising. Overwatch sends soldiers when it goes badly." }
+      ] },
+    { name: "Half-Life 2 Deathmatch", kind: "Combine", desc: "Rebels against the Combine. Rebels have the numbers, Combine have the gear.",
+      subs: [
+        { name: "Uprising", desc: "Rebels outnumber the Combine two to one, but every Combine soldier is a tough, well-supplied Elite." }
+      ] },
     { name: "Day of Defeat", kind: "Flags", desc: "Allies against Axis. Capture and hold the flags, the dead come back in waves." },
     { name: "DoD: TDM", kind: "Last standing", desc: "Day of Defeat's Allies against Axis, one life each. The last side standing wins." },
-    { name: "1995", kind: "Hold / storm", desc: "Federal Forces against Chechen Fighters. Hold the point, or storm it. The dead come back in waves." },
+    { name: "1995", kind: "Hold / storm", desc: "Federal Forces against Chechen Fighters. Hold the point while the dead come back in waves.",
+      subs: [
+        { name: "Storm", desc: "The Federal Forces storm the points one by one, and every capture buys them time. The Chechen Fighters win if the clock runs out." }
+      ] },
     { name: "1995: TDM", kind: "Last standing", desc: "The Federal Forces against the Chechens, classic team deathmatch." },
     { name: "Black October", kind: "Moscow 1993", desc: "Moscow, October 1993. Take down the Mayor, then hold off the storm. The dead come back in waves." }
   ]},
   { group: "Free for all", modes: [
-    { name: "Deathmatch", kind: "Everyone", desc: "Kill everyone. Variants include HEV suits for all, and low-gravity snipers where the landings won't hurt." },
-    { name: "Superfighters 3D", kind: "Chaos", desc: "Kill everyone, with crates full of grenades, mines and bombs. One variant is melee only: pipes, axes and crowbars." }
+    { name: "Deathmatch", kind: "Everyone", desc: "Kill everyone. Last one standing wins.",
+      subs: [
+        { name: "HEV Suits", desc: "Everyone spawns in a powered-up HEV suit." },
+        { name: "Flying Kriegsman", desc: "Scoped Kar98k and a combat knife. Low gravity, full air control, no fall damage." }
+      ] },
+    { name: "Superfighters 3D", kind: "Chaos", desc: "Kill everyone, with weapon crates scattered around the map.",
+      subs: [
+        { name: "Explosives Only", desc: "Every crate holds grenades, mines or bombs." },
+        { name: "Melee Only", desc: "No guns, just pipes, axes and crowbars." }
+      ] }
   ]}
 ];
 
@@ -365,6 +419,12 @@ for (var g = 0; g < zcModeGroups.length; g++) {
       var kindSpan = document.createElement("span");
       kindSpan.className = "kind";
       kindSpan.textContent = modeInfo.kind;
+      if (modeInfo.subs) {
+        var subCount = document.createElement("span");
+        subCount.className = "subcount";
+        subCount.textContent = "+" + modeInfo.subs.length;
+        kindSpan.insertBefore(subCount, kindSpan.firstChild);
+      }
       rowBtn.appendChild(nameSpan);
       rowBtn.appendChild(kindSpan);
       var moreBox = document.createElement("div");
@@ -372,6 +432,31 @@ for (var g = 0; g < zcModeGroups.length; g++) {
       var moreInner = document.createElement("div");
       var descText = document.createElement("p");
       descText.textContent = modeInfo.desc;
+      if (modeInfo.subs) {
+        var subRow = document.createElement("div");
+        subRow.className = "subs";
+        var subChoices = [{ name: "Standard", desc: modeInfo.desc }].concat(modeInfo.subs);
+        for (var c = 0; c < subChoices.length; c++) {
+          (function (subInfo, isFirst) {
+            var subBtn = document.createElement("button");
+            subBtn.type = "button";
+            subBtn.textContent = subInfo.name;
+            if (isFirst) subBtn.className = "pick";
+            subBtn.addEventListener("click", function () {
+              var siblings = subRow.children;
+              for (var k = 0; k < siblings.length; k++) siblings[k].className = "";
+              subBtn.className = "pick";
+              descText.className = "swap";
+              setTimeout(function () {
+                descText.textContent = subInfo.desc;
+                descText.className = "";
+              }, 180);
+            });
+            subRow.appendChild(subBtn);
+          })(subChoices[c], c === 0);
+        }
+        moreInner.appendChild(subRow);
+      }
       moreInner.appendChild(descText);
       moreBox.appendChild(moreInner);
       rowBtn.addEventListener("click", function () {
