@@ -131,49 +131,25 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
   position: fixed; z-index: 3;
   top: max(20px, calc(env(safe-area-inset-top, 0px) + 12px));
   right: max(20px, calc(env(safe-area-inset-right, 0px) + 12px));
-  width: 340px; max-width: calc(100vw - 32px);
+  width: 360px; max-width: calc(100vw - 32px); padding: 12px 16px 14px;
 }
-.modes > button {
-  width: 100%; display: flex; justify-content: space-between; align-items: center;
-  font: 700 15px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text);
-  padding: 10px 14px; cursor: pointer; transition: background 0.2s;
-}
-.modes > button:hover, .modes > button:focus-visible { background: rgba(150,0,0,0.85); outline: none; }
-.modes > button .num { color: var(--dim); font-weight: 400; letter-spacing: 0.04em; margin-left: 8px; }
-.modes > button .arrow { transition: transform 0.3s ease; display: inline-block; }
-.modes.open > button .arrow { transform: rotate(180deg); }
-.list {
-  margin-top: -1.5px; max-height: 0; overflow: hidden; opacity: 0;
-  transform: translateY(-6px); transition: max-height 0.45s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.45s;
-  visibility: hidden;
-}
-.modes.open .list { max-height: 62vh; opacity: 1; transform: none; overflow-y: auto; visibility: visible; }
-.group { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hot); padding: 12px 14px 4px; }
-.item { border-top: 1px solid rgba(255,255,255,0.06); opacity: 0; transform: translateX(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
-.modes.open .item { opacity: 1; transform: none; }
-.item > button {
-  width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 10px;
-  font: 600 16px var(--ui); color: var(--text); background: none; border: 0; padding: 9px 14px; cursor: pointer;
-  transition: background 0.2s;
-}
-.item > button:hover, .item > button:focus-visible { background: rgba(150,0,0,0.35); outline: none; }
-.item .kind { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); align-self: center; white-space: nowrap; }
-.item .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
-.item .more > div { overflow: hidden; }
-.item .more p { margin: 0; padding: 0 14px 12px; font-size: 14px; line-height: 1.4; color: var(--dim); opacity: 0; transition: opacity 0.3s ease; }
-.item.on .more { grid-template-rows: 1fr; }
-.item.on .more p { opacity: 1; }
-.item .more p.swap { opacity: 0; }
-.subs { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
-.subs button {
-  width: auto; display: inline-block; font: 600 12px var(--ui); letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--dim); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); padding: 4px 9px; cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-.subs button:hover, .subs button:focus-visible { color: var(--text); border-color: var(--edge); background: rgba(150,0,0,0.3); outline: none; }
-.subs button.pick, .item.on .subs button.pick { color: var(--text); background: rgba(150,0,0,0.75); border-color: var(--edge); }
-.item .subcount { color: var(--hot); margin-right: 8px; }
-.item.on > button { background: rgba(150,0,0,0.55); }
+.modes .head { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); }
+.modes .head .num { color: var(--dim); letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+.modes .slide { transition: opacity 0.4s ease; }
+.modes .slide.fade { opacity: 0; }
+.modes .group { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-top: 10px; }
+.modes .name { font-size: 26px; font-weight: 700; line-height: 1.15; margin-top: 2px; }
+.modes .kind { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-top: 2px; }
+.modes .sub { font-size: 15px; font-weight: 600; font-style: italic; color: var(--hot); margin-top: 6px; }
+.modes .desc { font-size: 15px; line-height: 1.4; color: var(--dim); margin-top: 8px; min-height: 4.2em; }
+
+.mapcard { margin-top: 8px; }
+.mapcard .label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
+.mapcard .big { font-size: clamp(24px, 2.4vw, 34px); font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 2px 10px rgba(0,0,0,0.8); word-break: break-all; }
+.mapcard .pic { display: block; width: 280px; max-width: 100%; height: 158px; object-fit: cover; border: 1.5px solid var(--edge); margin-top: 6px; background: #000; }
+.me { margin-top: 10px; padding: 8px 12px; align-self: flex-start; font-size: 14px; color: var(--dim); line-height: 1.45; }
+.me .label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); }
+.me b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* snake */
 .snakebox {
@@ -214,8 +190,8 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 
 @media (max-width: 760px) {
   .info { max-width: none; right: max(16px, env(safe-area-inset-right, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); top: 112px; align-items: center; text-align: center; }
-  .modes { left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); width: auto; top: 210px; }
-  .modes.open .list { max-height: 34vh; }
+  .modes { display: none; }
+  .mapcard .pic { margin-left: auto; margin-right: auto; }
   .bottom { width: calc(100vw - 32px); bottom: 140px; }
   .loader { left: 50%; transform: translateX(-50%); }
   .ring { width: 96px; height: 96px; }
@@ -223,7 +199,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 }
 @media (prefers-reduced-motion: reduce) {
   .bgstack .slide.show img, .bigz, .bigz span, .ring.hit .pop, .ring.hit .wave, .ring.rainbowed .done { animation: none; }
-  .list, .item, .item .more, .snakebox, .snakewin, .bgstack .slide { transition: none; }
+  .modes .slide, .snakebox, .snakewin, .bgstack .slide { transition: none; }
 }
 </style>
 </head>
@@ -238,8 +214,17 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 
 <div class="info">
   <div class="server" id="server">Connecting&hellip;</div>
-  <div class="map">map <b id="mapname">zb_downtown</b></div>
   <div class="ver">Z-City Release v1.0 &middot; ZBots 10.25</div>
+  <div class="mapcard">
+    <div class="label">Map</div>
+    <div class="big" id="mapname">zb_downtown</div>
+    <img class="pic" id="mappic" alt="" hidden>
+  </div>
+  <div class="me panel" id="me" hidden>
+    <div class="label">You</div>
+    <div>SteamID <b id="mesteam"></b></div>
+    <div>Joining for <b id="metime">0:00</b></div>
+  </div>
 </div>
 
 <main class="loader" aria-label="Loading">
@@ -253,10 +238,16 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
   </div>
 </main>
 
-<nav class="modes open" id="modes">
-  <button type="button" class="panel" id="modesbtn" aria-expanded="true" aria-controls="modelist"><span>Game modes<span class="num" id="modecount"></span></span><span class="arrow">&#9662;</span></button>
-  <div class="list panel" id="modelist"></div>
-</nav>
+<section class="modes panel" id="modes" aria-live="polite">
+  <div class="head"><span>Game modes</span><span class="num" id="modecount"></span></div>
+  <div class="slide" id="modeslide">
+    <div class="group" id="modegroup"></div>
+    <div class="name" id="modename"></div>
+    <div class="kind" id="modekind"></div>
+    <div class="sub" id="modesub" hidden></div>
+    <div class="desc" id="modedesc"></div>
+  </div>
+</section>
 
 <div class="bottom">
   <div class="status"><span id="status">Retrieving server info</span> <span class="count" id="sub"></span></div>
@@ -335,7 +326,7 @@ var zcFacts = [
   "If the lights go out, you're probably not alone.",
   "Losing a lot? Try losing in a different mode.",
   "Arms Race ends on a revolver. Make the last shot count.",
-  "The Z on this screen likes to be clicked. A lot."
+  "The arcade is hiding in game too. Click the version number on the Tab menu a few times."
 ];
 
 /* backgrounds */
@@ -381,95 +372,97 @@ function zcNextBackground() {
 }
 zcFindBackground(1);
 
-var zcListBox = document.getElementById("modelist");
-var zcModesBox = document.getElementById("modes");
-var zcOpenItem = null;
-var zcModeTotal = 0;
+/* game modes cycle on their own, the loading screen can't be clicked in game */
+var zcModeSlides = [];
+var zcModeCount = 0;
 for (var g = 0; g < zcModeGroups.length; g++) {
-  var groupLabel = document.createElement("div");
-  groupLabel.className = "group";
-  groupLabel.textContent = zcModeGroups[g].group;
-  zcListBox.appendChild(groupLabel);
   for (var m = 0; m < zcModeGroups[g].modes.length; m++) {
-    (function (modeInfo, delayMs) {
-      var row = document.createElement("div");
-      row.className = "item";
-      row.style.transitionDelay = delayMs + "ms";
-      var rowBtn = document.createElement("button");
-      rowBtn.type = "button";
-      rowBtn.setAttribute("aria-expanded", "false");
-      var nameSpan = document.createElement("span");
-      nameSpan.textContent = modeInfo.name;
-      var kindSpan = document.createElement("span");
-      kindSpan.className = "kind";
-      kindSpan.textContent = modeInfo.kind;
-      if (modeInfo.subs) {
-        var subCount = document.createElement("span");
-        subCount.className = "subcount";
-        subCount.textContent = "+" + modeInfo.subs.length;
-        kindSpan.insertBefore(subCount, kindSpan.firstChild);
+    var modeInfo = zcModeGroups[g].modes[m];
+    zcModeCount++;
+    zcModeSlides.push({ group: zcModeGroups[g].group, mode: modeInfo, sub: null, number: zcModeCount });
+    if (modeInfo.subs) {
+      for (var c = 0; c < modeInfo.subs.length; c++) {
+        zcModeSlides.push({ group: zcModeGroups[g].group, mode: modeInfo, sub: modeInfo.subs[c], number: zcModeCount });
       }
-      rowBtn.appendChild(nameSpan);
-      rowBtn.appendChild(kindSpan);
-      var moreBox = document.createElement("div");
-      moreBox.className = "more";
-      var moreInner = document.createElement("div");
-      var descText = document.createElement("p");
-      descText.textContent = modeInfo.desc;
-      if (modeInfo.subs) {
-        var subRow = document.createElement("div");
-        subRow.className = "subs";
-        var subChoices = [{ name: "Standard", desc: modeInfo.desc }].concat(modeInfo.subs);
-        for (var c = 0; c < subChoices.length; c++) {
-          (function (subInfo, isFirst) {
-            var subBtn = document.createElement("button");
-            subBtn.type = "button";
-            subBtn.textContent = subInfo.name;
-            if (isFirst) subBtn.className = "pick";
-            subBtn.addEventListener("click", function () {
-              var siblings = subRow.children;
-              for (var k = 0; k < siblings.length; k++) siblings[k].className = "";
-              subBtn.className = "pick";
-              descText.className = "swap";
-              setTimeout(function () {
-                descText.textContent = subInfo.desc;
-                descText.className = "";
-              }, 180);
-            });
-            subRow.appendChild(subBtn);
-          })(subChoices[c], c === 0);
-        }
-        moreInner.appendChild(subRow);
-      }
-      moreInner.appendChild(descText);
-      moreBox.appendChild(moreInner);
-      rowBtn.addEventListener("click", function () {
-        if (zcOpenItem && zcOpenItem !== row) {
-          zcOpenItem.classList.remove("on");
-          zcOpenItem.firstChild.setAttribute("aria-expanded", "false");
-        }
-        var opening = !row.classList.contains("on");
-        row.classList.toggle("on", opening);
-        rowBtn.setAttribute("aria-expanded", opening ? "true" : "false");
-        zcOpenItem = opening ? row : null;
-      });
-      row.appendChild(rowBtn);
-      row.appendChild(moreBox);
-      zcListBox.appendChild(row);
-    })(zcModeGroups[g].modes[m], Math.min(zcModeTotal * 25, 500));
-    zcModeTotal++;
+    }
   }
 }
-document.getElementById("modecount").textContent = zcModeTotal;
-zcListBox.querySelector(".item button").click();
-function zcSetModesOpen(isOpen) {
-  zcModesBox.classList.toggle("open", isOpen);
-  document.getElementById("modesbtn").setAttribute("aria-expanded", isOpen ? "true" : "false");
+var zcModeSlideBox = document.getElementById("modeslide");
+var zcModeAt = 0;
+while (true) {
+  zcModeAt = Math.floor(Math.random() * zcModeSlides.length);
+  if (zcModeSlides[zcModeAt].sub === null) break;
 }
-if (window.innerWidth <= 760) zcSetModesOpen(false);
-document.getElementById("modesbtn").addEventListener("click", function () {
-  zcSetModesOpen(!zcModesBox.classList.contains("open"));
-});
+function zcFillMode(slideInfo) {
+  document.getElementById("modecount").textContent = slideInfo.number + " / " + zcModeCount;
+  document.getElementById("modegroup").textContent = slideInfo.group;
+  document.getElementById("modename").textContent = slideInfo.mode.name;
+  document.getElementById("modekind").textContent = slideInfo.mode.kind;
+  var subLine = document.getElementById("modesub");
+  if (slideInfo.sub) {
+    subLine.textContent = slideInfo.sub.name;
+    subLine.hidden = false;
+    document.getElementById("modedesc").textContent = slideInfo.sub.desc;
+  } else {
+    subLine.hidden = true;
+    document.getElementById("modedesc").textContent = slideInfo.mode.desc;
+  }
+}
+/* longer descriptions stay up a bit longer */
+function zcModeWait(slideInfo) {
+  var textLen = slideInfo.sub ? slideInfo.sub.desc.length : slideInfo.mode.desc.length;
+  return Math.min(12000, 5000 + textLen * 40);
+}
+function zcNextMode() {
+  zcModeSlideBox.className = "slide fade";
+  setTimeout(function () {
+    zcModeAt = (zcModeAt + 1) % zcModeSlides.length;
+    zcFillMode(zcModeSlides[zcModeAt]);
+    zcModeSlideBox.className = "slide";
+    setTimeout(zcNextMode, zcModeWait(zcModeSlides[zcModeAt]));
+  }, 400);
+}
+zcFillMode(zcModeSlides[zcModeAt]);
+setTimeout(zcNextMode, zcModeWait(zcModeSlides[zcModeAt]));
+
+/* map picture: maps/<map>.jpg or .png in this repo, then the game's own map thumbnail */
+var zcMapPic = document.getElementById("mappic");
+var zcMapTries = [];
+function zcTryMapPic() {
+  if (zcMapTries.length === 0) { zcMapPic.hidden = true; return; }
+  zcMapPic.src = zcMapTries.shift();
+}
+zcMapPic.onload = function () { zcMapPic.hidden = false; };
+zcMapPic.onerror = zcTryMapPic;
+function zcShowMap(mapName) {
+  document.getElementById("mapname").textContent = mapName;
+  var safeName = encodeURIComponent(mapName);
+  zcMapPic.hidden = true;
+  zcMapTries = ["maps/" + safeName + ".jpg", "maps/" + safeName + ".png", "asset://garrysmod/maps/thumb/" + safeName + ".png"];
+  zcTryMapPic();
+}
+
+/* the joining player: steamid from GameDetails (64-bit) turned into STEAM_0:x:y */
+function zcSteamText(steamId) {
+  var idText = String(steamId);
+  if (!/^\d{17}$/.test(idText)) return idText;
+  var highPart = parseInt(idText.slice(0, 8), 10) - 76561197;
+  var lowPart = parseInt(idText.slice(8), 10) - 960265728;
+  var accountId = highPart * 1000000000 + lowPart;
+  if (accountId < 0) return idText;
+  return "STEAM_0:" + (accountId % 2) + ":" + Math.floor(accountId / 2);
+}
+var zcJoinStart = Date.now();
+function zcShowMe(steamId) {
+  if (!steamId) return;
+  document.getElementById("mesteam").textContent = zcSteamText(steamId);
+  document.getElementById("me").hidden = false;
+}
+setInterval(function () {
+  var secs = Math.floor((Date.now() - zcJoinStart) / 1000);
+  var restSecs = secs % 60;
+  document.getElementById("metime").textContent = Math.floor(secs / 60) + ":" + (restSecs < 10 ? "0" : "") + restSecs;
+}, 1000);
 
 var zcFactBox = document.getElementById("fact");
 var zcFactIndex = Math.floor(Math.random() * zcFacts.length);
@@ -553,7 +546,8 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
   zcInGame = true;
   if (typeof volume === "number") zcVolume = volume;
   document.getElementById("server").textContent = servername;
-  document.getElementById("mapname").textContent = mapname;
+  zcShowMap(mapname);
+  zcShowMe(steamid);
 }
 function SetStatusChanged(statusText) { zcInGame = true; document.getElementById("status").textContent = statusText.replace(/\.+$/, ""); }
 function SetFilesTotal(total) { zcInGame = true; zcFilesTotal = total; zcDraw(); }
@@ -565,6 +559,8 @@ var zcFakeStatus = ["Retrieving server info", "Workshop complete", "Downloading 
 setTimeout(function () {
   if (zcInGame) return;
   document.getElementById("server").textContent = "Server name";
+  zcShowMap("zb_downtown");
+  zcShowMe("76561197960287930");
   var tick = 0;
   zcFilesTotal = 186; zcFilesNeeded = 186;
   var fakeLoop = setInterval(function () {
