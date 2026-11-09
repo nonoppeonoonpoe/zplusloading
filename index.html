@@ -23,12 +23,22 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 [hidden] { display: none !important; }
 
 .bgstack { position: fixed; inset: 0; overflow: hidden; background: #0b0b0e; }
+.bgstack .slide {
+  position: absolute; inset: 0; overflow: hidden;
+  transform: translateX(100%); visibility: hidden;
+  transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.bgstack .slide.first { transform: none; visibility: visible; opacity: 0; transition: opacity 1.2s ease; }
+.bgstack .slide.first.show { opacity: 1; }
+.bgstack .slide.show { transform: translateX(0); visibility: visible; }
+.bgstack .slide.out { transform: translateX(-100%); visibility: visible; }
+.bgstack .slide.park { transition: none; }
 .bgstack img {
   position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
   object-fit: cover; object-position: 45% 50%;
-  opacity: 0; transition: opacity 1.6s ease; transform: scale(1.04);
+  transform: scale(1.04);
 }
-.bgstack img.show { opacity: 1; animation: drift 24s ease-in-out infinite alternate; }
+.bgstack .slide.show img { animation: drift 24s ease-in-out infinite alternate; }
 @keyframes drift { from { transform: scale(1.04) translateX(0); } to { transform: scale(1.09) translateX(-1.2%); } }
 .shade {
   position: fixed; inset: 0; pointer-events: none;
@@ -202,8 +212,8 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
   .bigz { font-size: 46px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bgstack img.show, .bigz, .bigz span, .ring.hit .pop, .ring.hit .wave, .ring.rainbowed .done { animation: none; }
-  .list, .item, .item .more, .snakebox, .snakewin { transition: none; }
+  .bgstack .slide.show img, .bigz, .bigz span, .ring.hit .pop, .ring.hit .wave, .ring.rainbowed .done { animation: none; }
+  .list, .item, .item .more, .snakebox, .snakewin, .bgstack .slide { transition: none; }
 }
 </style>
 </head>
@@ -372,10 +382,16 @@ function zcFindBackground(number) {
   var probe = new Image();
   probe.onload = function () {
     probe.alt = "";
-    zcStack.appendChild(probe);
-    zcBgImgs.push(probe);
+    var slideBox = document.createElement("div");
+    slideBox.className = "slide";
+    slideBox.appendChild(probe);
+    zcStack.appendChild(slideBox);
+    zcBgImgs.push(slideBox);
     if (zcBgImgs.length === 1) {
-      requestAnimationFrame(function () { probe.className = "show"; });
+      slideBox.className = "slide first";
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { slideBox.className = "slide first show"; });
+      });
     }
     if (zcBgImgs.length === 2 && zcBgTimer === null) {
       zcBgTimer = setInterval(zcNextBackground, zcBgSeconds * 1000);
@@ -384,10 +400,18 @@ function zcFindBackground(number) {
   };
   probe.src = zcBgFolder + number + ".jpg";
 }
+/* old slide gets pushed out to the left while the new one slides in from the right */
 function zcNextBackground() {
-  zcBgImgs[zcBgIndex].className = "";
+  var oldSlide = zcBgImgs[zcBgIndex];
   zcBgIndex = (zcBgIndex + 1) % zcBgImgs.length;
-  zcBgImgs[zcBgIndex].className = "show";
+  var newSlide = zcBgImgs[zcBgIndex];
+  newSlide.className = "slide park";
+  void newSlide.offsetWidth;
+  oldSlide.className = "slide out";
+  newSlide.className = "slide show";
+  setTimeout(function () {
+    if (oldSlide !== zcBgImgs[zcBgIndex]) oldSlide.className = "slide park";
+  }, 1500);
 }
 zcFindBackground(1);
 
