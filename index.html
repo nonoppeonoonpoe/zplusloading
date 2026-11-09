@@ -4,10 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Polo's Server Loading Screen</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Barlow+Semi+Condensed:wght@400;600;700&display=swap">
 <style>
-/* layout: full-bleed art; logo top center, server info top left, modes menu top right, status + facts bottom center, loading ring bottom left */
 :root {
   --panel: rgba(25, 25, 30, 0.86);
   --edge: rgba(155, 0, 0, 0.94);
@@ -64,7 +63,6 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .map b { color: var(--text); font-weight: 600; }
 .ver { font-size: 12px; color: rgba(242,238,238,0.55); text-shadow: 0 2px 8px rgba(0,0,0,0.9); margin-top: 2px; }
 
-/* loading ring + Z */
 .loader {
   position: fixed; z-index: 2;
   left: max(24px, calc(env(safe-area-inset-left, 0px) + 12px));
@@ -107,7 +105,6 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 @keyframes zpop { 0% { transform: scale(1); } 35% { transform: scale(1.3) rotate(-12deg); } 100% { transform: scale(1); } }
 @keyframes wave { from { opacity: 0.9; transform: scale(0.9); } to { opacity: 0; transform: scale(1.6); } }
 
-/* status + facts */
 .bottom {
   position: fixed; left: 50%; bottom: max(26px, calc(env(safe-area-inset-bottom, 0px) + 12px)); transform: translateX(-50%); z-index: 2;
   width: min(720px, calc(100vw - 340px)); display: flex; flex-direction: column; gap: 8px;
@@ -120,7 +117,6 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 #fact { font-size: 18px; line-height: 1.35; min-height: 1.35em; transition: opacity 0.4s; }
 #fact.fade { opacity: 0; }
 
-/* modes menu */
 .modes {
   position: fixed; z-index: 3;
   top: max(20px, calc(env(safe-area-inset-top, 0px) + 12px));
@@ -259,7 +255,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
     <div class="snakebody">
       <div class="scores"><span>Score <b id="snakescore">0</b></span><span>Best <b id="snakebest">0</b></span></div>
       <canvas id="snake" width="400" height="400"></canvas>
-      <div class="snakehint" id="snakehint">Arrow keys or WASD. Press any arrow to start.</div>
+      <div class="snakehint" id="snakehint">Arrow keys or WASD</div>
       <div class="pad">
         <button type="button" class="u" data-dir="up" aria-label="Up">&#9650;</button>
         <button type="button" class="l" data-dir="left" aria-label="Left">&#9664;</button>
@@ -271,7 +267,6 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 </div>
 
 <script>
-/* backgrounds: drop 1.jpg, 2.jpg, 3.jpg ... into the bg folder, the page finds them by itself */
 var zcBgFolder = "bg/";
 var zcBgSeconds = 12;
 var zcBgMax = 50;
@@ -283,14 +278,14 @@ var zcModeGroups = [
         { name: "Partners", desc: "Two traitors who know each other and share a radio channel." },
         { name: "Classic", desc: "The murderer has only a knife, the sheriff a revolver with a single round." }
       ] },
-    { name: "Trouble in Z-City", kind: "Traitors", desc: "Traitors hide among the innocents. Bodies, DNA, a tester and a traitor shop decide who walks out.",
+    { name: "Trouble in Z-City", kind: "Traitors", desc: "Just like good ol' TTT.",
       subs: [
         { name: "No Shop", desc: "No credits shop. Traitors start with a knife, a silenced pistol and a smoke grenade." }
       ] },
     { name: "Hide & Seek", kind: "Shooter", desc: "Some lunatic has a gun. Bystanders hide and run, and SWAT has to take the shooter out before everyone is dead." }
   ]},
   { group: "Hunted", modes: [
-    { name: "Stalker", kind: "1 vs all", desc: "The lights are off and something is hunting the squad. It can't be put down easily, and every kill buys it more time." },
+    { name: "Stalker", kind: "1 vs all", desc: "Based off of 'The Stalker: Remastered'. The lights are off and something is hunting a Combine squad. It can't be put down easily, and every kill buys it more time." },
     { name: "The Machine", kind: "1 vs all", desc: "Something that doesn't bleed is walking the map. SWAT has to stop it before it finishes the job." },
     { name: "Pathowogen :3", kind: "Infection", desc: "A few of you are already assimilated. The rest have to stay human until the extraction arrives." },
     { name: "ZS Versus", kind: "Infection", desc: "Humans against player zombies. Patient Zero turns, the bitten follow." }
@@ -298,30 +293,30 @@ var zcModeGroups = [
   { group: "Co-op", modes: [
     { name: "Zombie Survival", kind: "Waves", desc: "Hold out against waves of zombies. Barricade, scavenge, and keep each other alive.",
       subs: [
-        { name: "Nights", desc: "Days to scavenge, nights to survive. On the last night, hold out for extraction." }
+        { name: "Nights", desc: "Days to scavenge, nights to survive. On the last night, hold out for extraction..." }
       ] },
     { name: "Antlion Containment", kind: "Waves", desc: "Combine against waves of antlions. Hold the sector, keep the thumpers running, don't let the guard through." },
     { name: "NPC Defense", kind: "Waves", desc: "Hold your ground against waves of Combine or zombies, with bosses and special enemies in the extended version." },
     { name: "CO-OP", kind: "Campaign", desc: "Work together through a Half-Life 2 map and get to the end of it alive." }
   ]},
   { group: "Teams", modes: [
-    { name: "Counter-Strike", kind: "Bomb", desc: "Buy your kit, then plant the bomb or defuse it. One life a round.",
+    { name: "Counter-Strike", kind: "Bomb", desc: "Just like Counter-Strike. Terrorists plant a bomb or hold hostages, CT's have to defuse the bomb/save the hostages.",
       subs: [
         { name: "Competitive Match", desc: "First to win more than half the rounds. Sides swap at half-time." }
       ] },
     { name: "Assassination", kind: "VIP", desc: "One Counter-Terrorist is the VIP. Escort them to the escape zone, or kill them before they get there." },
-    { name: "Crisis Response", kind: "Breach", desc: "Negotiations failed. Suspects fortify the building, and SWAT has to breach it and take them all down before time runs out.",
+    { name: "Crisis Response", kind: "Breach", desc: "Based off of the Crisis Response game, R.I.P... Suspects fortify the building, and SWAT has to breach it and take them all down before time runs out.",
       subs: [
         { name: "Barricade", desc: "The suspects came prepared. SWAT must breach the building and take down every suspect before time runs out." },
         { name: "Hostage Rescue", desc: "The suspects have taken someone hostage, SWAT has to rescue them." }
       ] },
-    { name: "Team Deathmatch", kind: "Buy menu", desc: "Two teams, a buy menu and one life.",
+    { name: "Team Deathmatch", kind: "Buy menu", desc: "Two teams, and an arsenal of weapons that can be purchased.",
       subs: [
         { name: "No Buy", desc: "No buy menu. Every team gets the same rifle, pistol and armor." },
         { name: "Close Quarters", desc: "Pistols, SMGs and shotguns only." },
         { name: "Arms Race", desc: "Every 2 kills on an enemy moves you to the next gun. The first kill with the last gun wins." }
       ] },
-    { name: "Gang Wars", kind: "Streets", desc: "Grove Street against the Ballas. Hold your block, grab a car, and settle it.",
+    { name: "Gang Wars", kind: "Streets", desc: "Grove Street against the Ballas.",
       subs: [
         { name: "Street Fight", desc: "Melee only. Fists, bats and whatever else is lying around." },
         { name: "Heat", desc: "The police were notified of what's about to happen. They are coming early, and they are bringing backup." }
@@ -329,26 +324,26 @@ var zcModeGroups = [
     { name: "Riot", kind: "Streets", desc: "Rioters take the streets, the police have to restore order and arrest them.",
       subs: [
         { name: "Prison Riot", desc: "Prisoners start unarmed, with loot scattered all over the map. Fewer guards, but they carry pistols." },
-        { name: "HL2 Riot", desc: "Civil Protection against an unarmed uprising. Overwatch sends soldiers when it goes badly." }
+        { name: "HL2 Riot", desc: "Civil Protection against many unarmed rebels. Overwatch comes in and shuts everything down if it goes badly." }
       ] },
-    { name: "Half-Life 2 Deathmatch", kind: "Combine", desc: "Rebels against the Combine. Rebels have the numbers, Combine have the gear.",
+    { name: "Half-Life 2 Deathmatch", kind: "Combine", desc: "Rebels against the Combine. Rebels outnumber the Combine, but the Combine are well-equipped.",
       subs: [
         { name: "Uprising", desc: "Rebels outnumber the Combine two to one, but every Combine soldier is a tough, well-supplied Elite." }
       ] },
-    { name: "Day of Defeat", kind: "Flags", desc: "Allies against Axis. Capture and hold the flags, the dead come back in waves." },
+    { name: "Day of Defeat", kind: "Flags", desc: "Based off of DoD:S. Allies against Axis. Capture and hold the flags, the dead come back in waves." },
     { name: "DoD: TDM", kind: "Last standing", desc: "Day of Defeat's Allies against Axis, one life each. The last side standing wins." },
-    { name: "1995", kind: "Hold / storm", desc: "Federal Forces against Chechen Fighters. Hold the point while the dead come back in waves.",
+    { name: "1995", kind: "Hold / storm", desc: "Federal Forces against the Chechen Fighters. Hold the point, and wait for reinforcements to come help.",
       subs: [
         { name: "Storm", desc: "The Federal Forces storm the points one by one, and every capture buys them time. The Chechen Fighters win if the clock runs out." }
       ] },
     { name: "1995: TDM", kind: "Last standing", desc: "The Federal Forces against the Chechens, classic team deathmatch." },
-    { name: "Black October", kind: "Moscow 1993", desc: "Moscow, October 1993. Take down the Mayor, then hold off the storm. The dead come back in waves." }
+    { name: "Black October", kind: "Moscow 1993", desc: "Moscow, October 1993. Take down the Mayor, then hold off the storm. Dead people come back as reinforcements." }
   ]},
   { group: "Free for all", modes: [
     { name: "Deathmatch", kind: "Everyone", desc: "Kill everyone. Last one standing wins.",
       subs: [
         { name: "HEV Suits", desc: "Everyone spawns in a powered-up HEV suit." },
-        { name: "Flying Kriegsman", desc: "Scoped Kar98k and a combat knife. Low gravity, full air control, no fall damage." }
+        { name: "Flying Kriegsman", desc: "Based off of CSGO's Flying Scoutsman. Scoped Kar98k and a combat knife. Low gravity, full air control, no fall damage." }
       ] },
     { name: "Superfighters 3D", kind: "Chaos", desc: "Kill everyone, with weapon crates scattered around the map.",
       subs: [
@@ -396,7 +391,6 @@ function zcNextBackground() {
 }
 zcFindBackground(1);
 
-/* modes menu */
 var zcListBox = document.getElementById("modelist");
 var zcModesBox = document.getElementById("modes");
 var zcOpenItem = null;
@@ -487,7 +481,6 @@ document.getElementById("modesbtn").addEventListener("click", function () {
   zcSetModesOpen(!zcModesBox.classList.contains("open"));
 });
 
-/* facts */
 var zcFactBox = document.getElementById("fact");
 var zcFactIndex = Math.floor(Math.random() * zcFacts.length);
 function zcNextFact() {
@@ -502,7 +495,6 @@ zcFactBox.textContent = zcFacts[zcFactIndex];
 zcFactIndex = (zcFactIndex + 1) % zcFacts.length;
 setInterval(zcNextFact, 8000);
 
-/* loading ring */
 var zcRing = document.getElementById("done");
 var zcRingLen = 2 * Math.PI * 54;
 zcRing.style.strokeDasharray = zcRingLen;
@@ -522,7 +514,6 @@ function zcDraw() {
   document.getElementById("sub").textContent = line;
 }
 
-/* sounds */
 var zcVolume = 0.6;
 var zcAudio = null;
 function zcTone(type, startHz, endHz, length, loud, wait) {
@@ -550,7 +541,7 @@ function zcChime() {
   for (var n = 0; n < notes.length; n++) zcTone("triangle", notes[n], notes[n], 0.35, 0.2, n * 90);
 }
 
-/* Z easter egg */
+/* easter egg */
 var zcClicks = [];
 var zcRainbow = false;
 var zcZRing = document.getElementById("ring");
@@ -578,7 +569,6 @@ zcZRing.addEventListener("keydown", function (ev) {
   if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); zcHitZ(); }
 });
 
-/* snake */
 var zcSnakeBox = document.getElementById("snakebox");
 var zcCanvas = document.getElementById("snake");
 var zcPen = zcCanvas.getContext("2d");
@@ -724,7 +714,6 @@ document.addEventListener("keydown", function (ev) {
   if (dirName) { ev.preventDefault(); zcTurn(dirName); }
 });
 
-/* gmod hooks */
 var zcInGame = false;
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode, volume) {
   if (!zcInGame) { zcFilesTotal = 0; zcFilesNeeded = 0; zcFileName = ""; zcDraw(); }
@@ -738,7 +727,6 @@ function SetFilesTotal(total) { zcInGame = true; zcFilesTotal = total; zcDraw();
 function SetFilesNeeded(needed) { zcInGame = true; zcFilesNeeded = needed; zcDraw(); }
 function DownloadingFile(fileName) { zcInGame = true; zcFileName = fileName.split("/").pop(); zcDraw(); }
 
-/* fake join when opened outside the game */
 var zcFakeFiles = ["metrocop_gear.mdl", "ambient3.mp3", "stalker_vignette.vtf", "zb_downtown.ain", "sector_lockdown.wav", "w_oicw.mdl"];
 var zcFakeStatus = ["Retrieving server info", "Workshop complete", "Downloading files", "Loading resources", "Starting Lua", "Sending client info"];
 setTimeout(function () {
