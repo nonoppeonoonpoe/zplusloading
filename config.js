@@ -13,6 +13,27 @@ var zpConfig = {
   logo: { image: "", accent: "Z-", main: "CITY", plus: "+" },
   versionLine: "Z-City Release v1.0 &middot; ZBots 10.25",
   spinnerLetter: "Z",
+  spinnerStyle: "normal",
+
+  lights: false,
+  snow: false,
+  snowAmount: 70,
+
+  /*
+    seasons switch things on between two dates (month-day) every year, using the player's own date.
+    "set" replaces those settings while the season is on, "addFacts" adds facts to the list.
+    spinnerStyle can be "normal" or "snow" (a light blue Z with snow on top).
+  */
+  seasons: [
+    {
+      name: "christmas", from: "11-20", to: "01-01",
+      set: { theme: "christmas", lights: true, snow: true, spinnerStyle: "snow" },
+      addFacts: [
+        "Merry Christmas from Z-City+!",
+        "It's cold out there. Stay alive long enough to open your presents."
+      ]
+    }
+  ],
   arcade: true,
 
   backgrounds: { folder: "bg/", seconds: 12, max: 50, transition: "slide" },

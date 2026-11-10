@@ -133,6 +133,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--ui); overfl
 .ring.hit .pop { animation: zpop 0.45s cubic-bezier(.2,1.6,.4,1); }
 .ring.hit .wave { animation: wave 0.6s ease-out; }
 .ring.rainbowed .wave { border-color: #ffe11f; }
+/* snow style spinner: light blue icy letter with snow sitting on top */
+.ring.snowz .bigz span#zletter { background-image: linear-gradient(0deg, #f2fbff 0%, #8ccdec 25%, #f2fbff 50%, #8ccdec 75%, #f2fbff 100%); filter: drop-shadow(0 2px 4px var(--shadow)) drop-shadow(0 0 6px rgba(150, 215, 245, 0.45)); }
+.ring.snowz .done { stroke: #a8dcf5; filter: drop-shadow(0 0 4px rgba(150, 215, 245, 0.7)); }
+.ring.snowz .wave { border-color: #cdeefc; }
+.snowcap { position: absolute; left: 50%; top: 50%; width: 46px; height: 16px; margin-left: -23px; margin-top: -31px; pointer-events: none; }
+.ring.rainbowed .snowcap { opacity: 0.9; }
 @keyframes zturn { to { transform: rotate(360deg); } }
 @keyframes zrise { from { background-position: 0 0%; } to { background-position: 0 -200%; } }
 @keyframes hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 4px var(--glow)); } }
@@ -229,9 +235,14 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
 .pad .d { grid-column: 2; grid-row: 2; }
 .pad .r { grid-column: 3; grid-row: 2; }
 
+body.zp-lights .top { padding-top: max(52px, calc(env(safe-area-inset-top, 0px) + 40px)); }
+body.zp-lights .info { top: max(50px, calc(env(safe-area-inset-top, 0px) + 40px)); }
+body.zp-lights .rightcol { top: max(50px, calc(env(safe-area-inset-top, 0px) + 40px)); }
+
 @media (max-width: 760px) {
   .info { max-width: none; right: max(16px, env(safe-area-inset-right, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); top: 112px; align-items: center; text-align: center; }
   .rightcol { display: none; }
+  body.zp-lights .info { top: 136px; }
   .mapcard .pic { margin-left: auto; margin-right: auto; }
   .bottom { width: calc(100vw - 32px); bottom: 140px; }
   .loader { left: 50%; transform: translateX(-50%); }
@@ -356,6 +367,13 @@ document.getElementById("factshead").textContent = zpPick(zpConfig.factsTitle, "
 var zcLetter = zpPick(zpConfig.spinnerLetter, "Z");
 document.getElementById("zletter").textContent = zcLetter;
 document.getElementById("zletter2").textContent = zcLetter;
+if (zpPick(zpConfig.spinnerStyle, "normal") === "snow") {
+  document.getElementById("ring").className += " snowz";
+  var zcSnowCap = document.createElement("div");
+  zcSnowCap.className = "snowcap";
+  zcSnowCap.innerHTML = '<svg viewBox="0 0 46 16" width="46" height="16" aria-hidden="true"><path d="M3,12 C2,8 5,6 9,7 C11,3 17,3 19,6 C22,2.5 29,3 31,6 C34,4 41,5 42,9 C45,10 45,13 42,13 L37,13 C36,15.8 33,15.8 32,13 L13,13 C12,16 8.5,16 8,13 L5,13 C3,13 3,12.5 3,12 Z" fill="#f4fbff" stroke="#b9def0" stroke-width="0.7"/><path d="M10,8.5 C13,7 17,7 20,8" fill="none" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round"/></svg>';
+  document.querySelector("#ring .bigz").appendChild(zcSnowCap);
+}
 
 var zcPanelIds = { server: "server", version: "ver", map: "mapcard", spinner: "loader", modes: "modes", facts: "factsbox", status: "statusline" };
 for (var panelKey in zcPanelIds) {

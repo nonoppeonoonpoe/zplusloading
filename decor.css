@@ -1,0 +1,12 @@
+/* christmas lights and snow, only loaded when they're turned on */
+.zplights { position: fixed; top: 0; left: 0; right: 0; height: 60px; z-index: 6; pointer-events: none; overflow: hidden; }
+.zplights svg { display: block; }
+.zpbulb .glow { animation: zptwinkle 2.8s ease-in-out infinite alternate; animation-delay: inherit; }
+.zpbulb .glass { animation: zpdim 2.8s ease-in-out infinite alternate; animation-delay: inherit; }
+@keyframes zptwinkle { from { opacity: 1; } to { opacity: 0.2; } }
+@keyframes zpdim { from { opacity: 1; } to { opacity: 0.72; } }
+.zpsnow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+body.arcadeopen .zpbulb .glow, body.arcadeopen .zpbulb .glass { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .zpbulb .glow, .zpbulb .glass { animation: none; }
+}
