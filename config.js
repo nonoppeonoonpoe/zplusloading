@@ -74,7 +74,8 @@ var zpConfig = {
   motd: {
     welcome: "Welcome to",
     background: "bg/1.jpg",
-    closeHint: "Close this window with the button below",
+    closeHint: "",
+    rulesButton: "I've read the rules",
     pages: [
     {
       id: "start", tab: "Start here", type: "cards",
@@ -88,6 +89,21 @@ var zpConfig = {
         { tag: "Menu", title: "Press Esc for the Z-City menu", text: "Settings, key binds, your character's appearance, achievements, stats and votes all live there." },
         { tag: "Content", title: "Missing textures or errors?", text: "Subscribe to the server's workshop collection (see Community) so models and sounds load properly." }
       ]
+    },
+    {
+      id: "now", tab: "Right now", type: "server",
+      title: "Right now",
+      lede: "What's happening on the server."
+    },
+    {
+      id: "you", tab: "Your stats", type: "stats",
+      title: "Your stats",
+      lede: "Everything you've done here, across every mode."
+    },
+    {
+      id: "top", tab: "Leaderboard", type: "leaderboard",
+      title: "Leaderboard",
+      lede: "The highest levels on the server."
     },
     {
       id: "rules", tab: "Rules", type: "rules",
