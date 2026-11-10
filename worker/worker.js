@@ -111,6 +111,8 @@ export default {
       return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET", "Access-Control-Max-Age": "86400" } });
     }
 
+    if (!env.DB) return sendJson({ error: "no database connected, add a D1 binding named DB in the Worker settings" }, 500);
+
     await makeTables(env);
 
     if (request.method === "GET") {
