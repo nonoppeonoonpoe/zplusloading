@@ -99,7 +99,7 @@ var zpConfig = {
     "If the lights go out, you're probably not alone.",
     "Losing a lot? Try losing in a different mode.",
     "Arms Race ends on a revolver. Make the last shot count.",
-    "The arcade is hiding in game too. Click the version number on the Tab menu a few times."
+    "The arcade is hiding in game too. Click the Z+ on the Tab menu a few times."
   ],
 
   motd: {
