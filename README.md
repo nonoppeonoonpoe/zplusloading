@@ -22,6 +22,10 @@ Each entry in `motd.pages` is one tab. Types: `cards`, `rules`, `keys`, `modes`,
 
 Put `maps/<mapname>.jpg` (or .png) here, 16:9. Without one the page tries the game's own map thumbnail, and hides the picture if that fails too.
 
+## In-game MOTD
+
+`addon/` is the Lua addon that opens the MOTD in game with the player's stats, see `addon/README.md`. Add `?demo=1` to the MOTD address to preview the stats tabs with made-up data.
+
 ## Stats API
 
 `worker/` has the Cloudflare Worker for player stats and live server info, see `worker/README.md`.
