@@ -16,7 +16,7 @@ Z-City+ loading screen and MOTD. Click the spinning Z!
 
 ## MOTD tabs
 
-Each entry in `motd.pages` is one tab. Types: `cards`, `rules`, `keys`, `modes`, `html`. A card with a `url` gets a button (`button:` sets its text).
+Each entry in `motd.pages` is one tab. Types: `cards`, `rules`, `keys`, `modes`, `html`, plus `server`, `stats` and `leaderboard`, which only show in game when the addon sends data. A card with a `url` gets a button (`button:` sets its text).
 
 ## Map pictures
 
