@@ -1,0 +1,19 @@
+/* christmas lights and snow, only loaded when they're turned on */
+.zplights { position: fixed; top: 0; left: 0; right: 0; height: 60px; z-index: 6; pointer-events: none; overflow: hidden; }
+.zplights svg { display: block; }
+.zpbulb .glow { animation: zptwinkle 2.8s ease-in-out infinite alternate; animation-delay: inherit; }
+.zpbulb .glass { animation: zpdim 2.8s ease-in-out infinite alternate; animation-delay: inherit; }
+@keyframes zptwinkle { from { opacity: 1; } to { opacity: 0.2; } }
+@keyframes zpdim { from { opacity: 1; } to { opacity: 0.72; } }
+.zpsnow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+body.arcadeopen .zpbulb .glow, body.arcadeopen .zpbulb .glass { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .zpbulb .glow, .zpbulb .glass { animation: none; }
+}
+/* snow style logo: the accent letters go light blue and icy, like the snowy spinner */
+.logo.snowlogo .z, .logo.snowlogo .plus {
+  background-image: linear-gradient(180deg, #f6fcff 0%, #bfe6f8 45%, #7fc4e6 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-right: 0.06em; text-shadow: none;
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.75)) drop-shadow(0 0 10px rgba(150, 215, 245, 0.45));
+}

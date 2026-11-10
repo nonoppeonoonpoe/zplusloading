@@ -1,0 +1,20 @@
+/* christmas: pine green, cranberry red and a little gold */
+:root {
+  --panel: rgba(12, 28, 20, 0.86);
+  --panel-2: rgba(255, 255, 255, 0.04);
+  --panel-solid: rgba(10, 22, 16, 0.97);
+  --edge: rgba(176, 28, 46, 0.92);
+  --red: #d12a3e;
+  --red-dark: #5e0d18;
+  --hot: #f2c75c;
+  --glow: rgba(242, 199, 92, 0.55);
+  --hover: rgba(176, 28, 46, 0.3);
+  --active: rgba(176, 28, 46, 0.6);
+  --pick: rgba(176, 28, 46, 0.78);
+  --tab-mark: #f2c75c;
+  --text: #f4f8f5;
+  --dim: #b3c2b8;
+  --faint: rgba(244, 248, 245, 0.5);
+  --bg: #07130d;
+  --shade-rgb: 5, 14, 10;
+}

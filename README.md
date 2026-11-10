@@ -12,7 +12,18 @@ Z-City+ loading screen and MOTD. Click the spinning Z!
 
 ## Themes
 
-`zcity-red` (default), `zplus-cyan` and `zplus-green` are in `themes/`. Pick one with `theme:` in `config.js`, or try one with `?theme=zplus-cyan` on the address. A theme is just a list of colors, so copying one and changing the colors makes a new one. Single colors can also be changed in `config.js` under `colors:` (accent, accentDark, accentText, glow, panel, border, text, dimText, background, hover, active, selected).
+`zcity-red` (default), `zplus-cyan`, `zplus-green` and `christmas` are in `themes/`. Pick one with `theme:` in `config.js`, or try one with `?theme=zplus-cyan` on the address. A theme is just a list of colors, so copying one and changing the colors makes a new one. Single colors can also be changed in `config.js` under `colors:` (accent, accentDark, accentText, glow, panel, border, text, dimText, background, hover, active, selected).
+
+### Seasons
+
+`seasons:` in `config.js` switches settings on between two dates every year, using each player's own date. The Christmas season runs from Nov 20 to Jan 1 and turns on the `christmas` theme, lights along the top, falling snow, the snowy spinner and the light blue logo. Set `spinnerStyle: "normal"` inside its `set:` to keep the regular Z, or remove the season to turn it off.
+
+- `lights: true`: Christmas lights along the top.
+- `snow: true` and `snowAmount: 70`: falling snow.
+- `spinnerStyle: "snow"`: a light blue Z with snow on top (`"normal"` is the regular one).
+- `logoStyle: "snow"`: the logo's accent letters go the same light blue (`"normal"` keeps the theme color).
+
+Add `?season=christmas` to the address to preview it any time of year, or `?season=none` to turn seasons off.
 
 ## MOTD tabs
 
