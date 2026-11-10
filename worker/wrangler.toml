@@ -1,0 +1,8 @@
+name = "zplus-api"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "zplus"
+database_id = "paste-your-database-id-here"
