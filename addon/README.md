@@ -16,6 +16,17 @@ Copy this `addon` folder into `garrysmod/addons/` on the server and rename it (f
 
 Players open it again with `!motd`, `/motd` or the `zplus_motd` console command.
 
+## Loading screen data (stats API)
+
+The addon also keeps the stats API (`worker/`) up to date, so the loading screen can show live server info and each player's card. It stays off until both of these are set:
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `zplus_api_url` | empty | The Worker address, for example `https://zplus-api.<you>.workers.dev/` |
+| `zplus_api_key` | empty | The `API_KEY` secret you set on the Worker |
+| `zplus_api_status_secs` | `30` | Seconds between live info updates (also sent on joins, leaves, and round start and end in Z-City) |
+| `zplus_api_card_secs` | `300` | Seconds between player card updates (also sent when a player leaves) |
+
 ## Filling in stats
 
 On its own the addon sends the player's name, the map, player count and who's online. A gamemode adds more by replacing these on the server:

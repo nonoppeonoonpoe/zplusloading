@@ -18,12 +18,21 @@ var zpConfig = {
   backgrounds: { folder: "bg/", seconds: 12, max: 50, transition: "slide" },
   mapPictures: "maps/",
 
+  api: "https://zplus-api.z-plus.workers.dev/",
+  apiRefresh: 15,
+  liveTitle: "Right now",
+  liveNames: 8,
+  liveMaxAge: 120,
+  playerCardStats: ["Wins", "Playtime", "Best mode"],
+  newPlayerText: "First time here? Welcome!",
+
   panels: {
     server: true,
     version: true,
     map: true,
     mapPicture: true,
     player: true,
+    live: true,
     modes: true,
     facts: true,
     status: true,
