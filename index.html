@@ -16,13 +16,30 @@
   --dim: #b4adad;
   --ui: "Bahnschrift", "Barlow Semi Condensed", "Arial Narrow", sans-serif;
   --logo: "Russo One", "Bahnschrift", "Arial Black", sans-serif;
+  --bg: #0b0b0e;
+  --panel-solid: rgba(18, 18, 22, 0.97);
+  --red-dark: #5a0000;
+  --glow: rgba(200, 0, 0, 0.6);
+  --hover: rgba(150, 0, 0, 0.3);
+  --active: rgba(150, 0, 0, 0.6);
+  --pick: rgba(150, 0, 0, 0.75);
+  --tab-mark: #ff3b3b;
+  --bind: #e8b04a;
+  --bind-line: rgba(232, 176, 74, 0.5);
+  --logo-main: #ffffff;
+  --line: rgba(255, 255, 255, 0.08);
+  --chip: rgba(255, 255, 255, 0.05);
+  --chip-line: rgba(255, 255, 255, 0.13);
+  --faint: rgba(242, 238, 238, 0.5);
+  --shadow: rgba(0, 0, 0, 0.8);
+  --shade-rgb: 8, 8, 10;
   color-scheme: dark;
 }
 html, body { height: 100%; margin: 0; }
-body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--ui); overflow: hidden; }
 [hidden] { display: none !important; }
 
-.bgstack { position: fixed; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; background: #0b0b0e; }
+.bgstack { position: fixed; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; background: var(--bg); }
 .bgstack .slide {
   position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden;
   transform: translateX(100%); visibility: hidden;
@@ -33,6 +50,11 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .bgstack .slide.show { transform: translateX(0); visibility: visible; }
 .bgstack .slide.out { transform: translateX(-100%); visibility: visible; }
 .bgstack .slide.park { transition: none; }
+.bgstack.fade .slide { transform: none; opacity: 0; transition: opacity 1.4s ease; }
+.bgstack.fade .slide.show { opacity: 1; }
+.bgstack.fade .slide.out { opacity: 0; }
+.bgstack.fade .slide.park { transition: none; visibility: hidden; }
+.bgstack.none .slide, .bgstack.none .slide.first { transition: none; }
 .bgstack img {
   position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; max-width: none;
   object-fit: cover; object-position: 45% 50%;
@@ -43,8 +65,8 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .shade {
   position: fixed; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(8,8,10,0.78) 0%, rgba(8,8,10,0.15) 32%, rgba(8,8,10,0.1) 60%, rgba(8,8,10,0.82) 100%),
-    radial-gradient(60% 45% at 50% 52%, rgba(8,8,10,0.45), transparent 70%);
+    linear-gradient(180deg, rgba(var(--shade-rgb),0.78) 0%, rgba(var(--shade-rgb),0.15) 32%, rgba(var(--shade-rgb),0.1) 60%, rgba(var(--shade-rgb),0.82) 100%),
+    radial-gradient(60% 45% at 50% 52%, rgba(var(--shade-rgb),0.45), transparent 70%);
 }
 
 .top {
@@ -56,11 +78,13 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .logo {
   font-family: var(--logo); font-size: clamp(44px, 6.4vw, 92px); line-height: 1;
   letter-spacing: 0.04em; transform: skewX(-10deg); white-space: nowrap;
-  text-shadow: 0 4px 0 rgba(0,0,0,0.45), 0 10px 30px rgba(0,0,0,0.6);
+  text-shadow: 0 4px 0 var(--shadow), 0 10px 30px var(--shadow);
 }
 .logo .z { color: var(--red); }
-.logo .c { color: #ffffff; }
+.logo .c { color: var(--logo-main); }
 .logo .plus { color: var(--red); font-size: 0.72em; vertical-align: 0.32em; margin-left: 0.06em; }
+.logo.haspic { transform: none; }
+.logo .logoimg { display: block; max-height: clamp(60px, 9vw, 120px); max-width: 60vw; filter: drop-shadow(0 6px 18px var(--shadow)); }
 
 .info {
   position: fixed; z-index: 2; display: flex; flex-direction: column; gap: 4px;
@@ -68,10 +92,10 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
   left: max(24px, calc(env(safe-area-inset-left, 0px) + 12px));
   max-width: calc(50vw - 220px);
 }
-.server { font-size: clamp(20px, 2vw, 28px); font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-.map { font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
+.server { font-size: clamp(20px, 2vw, 28px); font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 2px 10px var(--shadow); }
+.map { font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); text-shadow: 0 2px 8px var(--shadow); }
 .map b { color: var(--text); font-weight: 600; }
-.ver { font-size: 12px; color: rgba(242,238,238,0.55); text-shadow: 0 2px 8px rgba(0,0,0,0.9); margin-top: 2px; }
+.ver { font-size: 12px; color: var(--faint); text-shadow: 0 2px 8px var(--shadow); margin-top: 2px; }
 
 .loader {
   position: fixed; z-index: 2;
@@ -81,8 +105,8 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .ring { position: relative; width: 120px; height: 120px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .ring:focus-visible { outline: 2px solid var(--hot); outline-offset: 4px; border-radius: 50%; }
 .ring svg { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; }
-.ring .track { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 5; }
-.ring .done { fill: none; stroke: var(--red); stroke-width: 5; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.35s ease; filter: drop-shadow(0 0 4px rgba(200,0,0,0.6)); }
+.ring .track { fill: none; stroke: var(--chip-line); stroke-width: 5; }
+.ring .done { fill: none; stroke: var(--red); stroke-width: 5; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.35s ease; filter: drop-shadow(0 0 4px var(--glow)); }
 .ring .pop { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center; }
 .bigz {
   position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center;
@@ -91,11 +115,11 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 }
 .bigz span {
   display: block; padding: 0 4px;
-  background: linear-gradient(0deg, #c80000 0%, #5a0000 25%, #c80000 50%, #5a0000 75%, #c80000 100%);
+  background: linear-gradient(0deg, var(--red) 0%, var(--red-dark) 25%, var(--red) 50%, var(--red-dark) 75%, var(--red) 100%);
   background-size: 100% 200%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: zrise 1.6s linear infinite;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 2px 4px var(--shadow));
 }
 .bigz span.rainbow {
   position: absolute; opacity: 0; transition: opacity 1.5s ease;
@@ -111,7 +135,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .ring.rainbowed .wave { border-color: #ffe11f; }
 @keyframes zturn { to { transform: rotate(360deg); } }
 @keyframes zrise { from { background-position: 0 0%; } to { background-position: 0 -200%; } }
-@keyframes hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 4px rgba(200,0,0,0.6)); } }
+@keyframes hue { to { filter: hue-rotate(360deg) drop-shadow(0 0 4px var(--glow)); } }
 @keyframes zpop { 0% { transform: scale(1); } 35% { transform: scale(1.3) rotate(-12deg); } 100% { transform: scale(1); } }
 @keyframes wave { from { opacity: 0.9; transform: scale(0.9); } to { opacity: 0; transform: scale(1.6); } }
 
@@ -119,7 +143,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
   position: fixed; left: 50%; bottom: max(26px, calc(env(safe-area-inset-bottom, 0px) + 12px)); transform: translateX(-50%); z-index: 2;
   width: min(720px, calc(100vw - 340px)); display: flex; flex-direction: column; gap: 8px;
 }
-.status { font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.9); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status { font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 2px 8px var(--shadow); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .status .count { color: var(--dim); font-weight: 400; letter-spacing: 0.04em; text-transform: none; font-variant-numeric: tabular-nums; }
 .panel { background: var(--panel); border: 1.5px solid var(--edge); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box; }
 .facts { padding: 12px 20px; text-align: center; }
@@ -144,8 +168,8 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 .modes .desc { font-size: 15px; line-height: 1.4; color: var(--dim); margin-top: 8px; min-height: 4.2em; }
 
 .mapcard { margin-top: 8px; }
-.mapcard .label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
-.mapcard .big { font-size: clamp(24px, 2.4vw, 34px); font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 2px 10px rgba(0,0,0,0.8); word-break: break-all; }
+.mapcard .label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); text-shadow: 0 2px 8px var(--shadow); }
+.mapcard .big { font-size: clamp(24px, 2.4vw, 34px); font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 2px 10px var(--shadow); word-break: break-all; }
 .mapcard .pic { display: block; width: 280px; max-width: 100%; height: 158px; object-fit: cover; border: 1.5px solid var(--edge); margin-top: 6px; background: #000; }
 .me { margin-top: 10px; padding: 8px 12px; align-self: flex-start; font-size: 14px; color: var(--dim); line-height: 1.45; }
 .me .label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); }
@@ -154,38 +178,38 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); overflow
 /* snake */
 .snakebox {
   position: fixed; z-index: 10; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center;
-  background: rgba(5,5,8,0.55); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
+  background: rgba(var(--shade-rgb),0.55); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .snakebox.open { opacity: 1; visibility: visible; }
 .snakewin { width: min(440px, 100%); transform: scale(0.94); transition: transform 0.3s ease; }
 .snakebox.open .snakewin { transform: none; }
-.snakewin.wide { width: min(990px, 100%, calc((100vh - 170px) * 4 / 3 + 30px)); backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(18, 18, 22, 0.97); }
+.snakewin.wide { width: min(990px, 100%, calc((100vh - 170px) * 4 / 3 + 30px)); backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--panel-solid); }
 /* while the arcade is open nothing behind it moves or blurs, so the game gets the whole frame */
 body.arcadeopen .bgstack .slide.show img, body.arcadeopen .bigz, body.arcadeopen .bigz span, body.arcadeopen .ring.rainbowed .done { animation-play-state: paused; }
 body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
 .arcadetabs { display: flex; gap: 6px; padding: 10px 14px 0; }
-.arcadetabs button { font: 700 13px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 6px 12px; cursor: pointer; }
+.arcadetabs button { font: 700 13px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); background: var(--chip); border: 1px solid var(--chip-line); padding: 6px 12px; cursor: pointer; }
 .arcadetabs button:hover, .arcadetabs button:focus-visible { color: var(--text); outline: none; border-color: var(--edge); }
-.arcadetabs button.on { color: var(--text); background: rgba(150,0,0,0.75); border-color: var(--edge); }
+.arcadetabs button.on { color: var(--text); background: var(--pick); border-color: var(--edge); }
 .danmakubody { padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.danmakuframe { position: relative; width: 100%; height: 0; padding-bottom: 75%; overflow: hidden; background: #000; outline: 1px solid rgba(255,255,255,0.08); }
+.danmakuframe { position: relative; width: 100%; height: 0; padding-bottom: 75%; overflow: hidden; background: #000; outline: 1px solid var(--line); }
 .danmakuframe iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 .danmakuhint { font-size: 13px; color: var(--dim); text-align: center; }
 .danmakuhint a { color: var(--hot); }
-.snakehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.snakehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); }
 .snaketitle { font-family: var(--logo); font-size: 22px; transform: skewX(-10deg); }
 .snaketitle .r { background: linear-gradient(90deg, #ff2a2a, #ff9a1f, #ffe11f, #36d65a, #2fa8ff, #9a4dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .snakehead button { font: 700 18px var(--ui); color: var(--text); background: none; border: 1.5px solid var(--edge); width: 32px; height: 32px; cursor: pointer; }
-.snakehead button:hover, .snakehead button:focus-visible { background: rgba(150,0,0,0.85); outline: none; }
+.snakehead button:hover, .snakehead button:focus-visible { background: var(--pick); outline: none; }
 .snakebody { padding: 14px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .scores { display: flex; justify-content: space-between; width: 100%; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
 .scores b { color: var(--text); }
-#snake { width: 100%; max-width: 400px; aspect-ratio: 1; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.08); display: block; box-sizing: border-box; }
+#snake { width: 100%; max-width: 400px; aspect-ratio: 1; background: var(--shadow); border: 1px solid var(--line); display: block; box-sizing: border-box; }
 .snakehint { font-size: 13px; color: var(--dim); text-align: center; }
 .pad { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(2, 36px); gap: 4px; }
-.pad button { font: 700 16px var(--ui); color: var(--text); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-.pad button:hover, .pad button:focus-visible { background: rgba(150,0,0,0.6); outline: none; }
+.pad button { font: 700 16px var(--ui); color: var(--text); background: var(--chip); border: 1px solid var(--chip-line); cursor: pointer; }
+.pad button:hover, .pad button:focus-visible { background: var(--active); outline: none; }
 .pad .u { grid-column: 2; grid-row: 1; }
 .pad .l { grid-column: 1; grid-row: 2; }
 .pad .d { grid-column: 2; grid-row: 2; }
@@ -205,6 +229,10 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
   .modes .slide, .snakebox, .snakewin, .bgstack .slide { transition: none; }
 }
 </style>
+<script src="modes.js"></script>
+<script src="config.js"></script>
+<script src="zplus.js"></script>
+<script>zpStart();</script>
 </head>
 <body>
 
@@ -212,13 +240,13 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
 <div class="shade"></div>
 
 <header class="top">
-  <div class="logo"><span class="z">Z-</span><span class="c">CITY</span><span class="plus">+</span></div>
+  <div class="logo" id="logo"></div>
 </header>
 
 <div class="info">
   <div class="server" id="server">Connecting&hellip;</div>
-  <div class="ver">Z-City Release v1.0 &middot; ZBots 10.25</div>
-  <div class="mapcard">
+  <div class="ver" id="ver"></div>
+  <div class="mapcard" id="mapcard">
     <div class="label">Map</div>
     <div class="big" id="mapname">zb_downtown</div>
     <img class="pic" id="mappic" alt="" hidden>
@@ -230,19 +258,19 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
   </div>
 </div>
 
-<main class="loader" aria-label="Loading">
+<main class="loader" id="loader" aria-label="Loading">
   <div class="ring" id="ring" role="button" tabindex="0" aria-label="Z">
     <svg viewBox="0 0 120 120" aria-hidden="true">
       <circle class="track" cx="60" cy="60" r="54"></circle>
       <circle class="done" id="done" cx="60" cy="60" r="54"></circle>
     </svg>
     <div class="wave"></div>
-    <div class="pop"><div class="bigz"><span>Z</span><span class="rainbow" aria-hidden="true">Z</span></div></div>
+    <div class="pop"><div class="bigz"><span id="zletter">Z</span><span class="rainbow" id="zletter2" aria-hidden="true">Z</span></div></div>
   </div>
 </main>
 
 <section class="modes panel" id="modes" aria-live="polite">
-  <div class="head"><span>Game modes</span><span class="num" id="modecount"></span></div>
+  <div class="head"><span id="modeshead">Game modes</span><span class="num" id="modecount"></span></div>
   <div class="slide" id="modeslide">
     <div class="group" id="modegroup"></div>
     <div class="name" id="modename"></div>
@@ -253,9 +281,9 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
 </section>
 
 <div class="bottom">
-  <div class="status"><span id="status">Retrieving server info</span> <span class="count" id="sub"></span></div>
-  <section class="facts panel">
-    <div class="head">Did you know</div>
+  <div class="status" id="statusline"><span id="status">Retrieving server info</span> <span class="count" id="sub"></span></div>
+  <section class="facts panel" id="factsbox">
+    <div class="head" id="factshead">Did you know</div>
     <div id="fact"></div>
   </section>
 </div>
@@ -288,49 +316,34 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
   </div>
 </div>
 
-<script src="modes.js"></script>
 <script src="arcade.js"></script>
 <script>
-var zcBgFolder = "bg/";
-var zcBgSeconds = 12;
-var zcBgMax = 50;
+/* settings come from config.js, see zplus.js for the helpers */
+var zcBgSettings = zpConfig.backgrounds || {};
+var zcBgFolder = zpPick(zcBgSettings.folder, "bg/");
+var zcBgSeconds = zpPick(zcBgSettings.seconds, 12);
+var zcBgMax = zpPick(zcBgSettings.max, 50);
+var zcBgStyle = zpPick(zcBgSettings.transition, "slide");
+var zcFacts = zpConfig.facts || [];
+var zcModeGroups2 = zpModeGroups();
 
-var zcFacts = [
-  "Spectating a bot? Press G to take over its body.",
-  "Being carried off? Press Space to break free. The more hurt you are, the harder it gets.",
-  "Ragdolled and stuck? Ask a bot to carry you from the radial menu.",
-  "Bots take errands. Tell one to buy you something, or to pick that up.",
-  "Levels, prestige and daily challenges count in every mode.",
-  "Walls and doors muffle sound. If you hear it clearly, it's close.",
-  "Dead? Look at a prop while spectating and press V to possess it.",
-  "Fall from high enough and you won't get back up.",
-  "Carrying someone? Use the radial menu to put them down gently.",
-  "Things can be hidden on a body. A pat-down won't always find them.",
-  "With a weapon sling you can carry a melee weapon on your back.",
-  "Some guns can be loaded with mixed ammo. Mix rounds into a magazine for the right job.",
-  "You can stack several grenades of the same kind in one slot.",
-  "In Team Deathmatch you can double-click an item to buy it right away.",
-  "During freeze time, teammates can buy gear for you.",
-  "Your team can see your claymores and planted explosives through walls. The enemy can't.",
-  "Bots will flank where you aim if you ask them to.",
-  "Bots can hide or hold an angle if you tell them to.",
-  "Bots smash boards, crates and other breakable props that are in their way.",
-  "Shoot a bot teammate and it might say sorry. Keep doing it and it might shoot back.",
-  "Bots pick up gun attachments they find and put them on their guns.",
-  "Bots fight NPCs too, not just players.",
-  "Combine and Metrocops can throw out manhacks from the radial menu.",
-  "Fear builds up in the dark. Stay close to others in zombie modes and Stalker.",
-  "Each mode has its own level, on top of your main level.",
-  "Locked door? Hit it enough times and it won't be locked anymore.",
-  "Cuffed people can still be searched.",
-  "Want a bot's gun? Ask it to trade with you.",
-  "In Homicide, the police always come eventually. Stay alive until then.",
-  "Patience wins more Homicide rounds than guns do.",
-  "If the lights go out, you're probably not alone.",
-  "Losing a lot? Try losing in a different mode.",
-  "Arms Race ends on a revolver. Make the last shot count.",
-  "The arcade is hiding in game too. Click the version number on the Tab menu a few times."
-];
+zpFillLogo(document.getElementById("logo"));
+document.getElementById("ver").innerHTML = zpPick(zpConfig.versionLine, "");
+if (zpPick(zpConfig.serverName, "") !== "") document.getElementById("server").textContent = zpConfig.serverName;
+document.getElementById("modeshead").textContent = zpPick(zpConfig.modesTitle, "Game modes");
+document.getElementById("factshead").textContent = zpPick(zpConfig.factsTitle, "Did you know");
+var zcLetter = zpPick(zpConfig.spinnerLetter, "Z");
+document.getElementById("zletter").textContent = zcLetter;
+document.getElementById("zletter2").textContent = zcLetter;
+
+var zcPanelIds = { server: "server", version: "ver", map: "mapcard", spinner: "loader", modes: "modes", facts: "factsbox", status: "statusline" };
+for (var panelKey in zcPanelIds) {
+  if (!zpPanelOn(panelKey)) document.getElementById(zcPanelIds[panelKey]).hidden = true;
+}
+if (zpPick(zpConfig.versionLine, "") === "") document.getElementById("ver").hidden = true;
+if (zcFacts.length === 0) document.getElementById("factsbox").hidden = true;
+if (zcModeGroups2.length === 0) document.getElementById("modes").hidden = true;
+if (zcBgStyle === "fade" || zcBgStyle === "none") document.getElementById("bgstack").className = "bgstack " + zcBgStyle;
 
 /* backgrounds */
 var zcStack = document.getElementById("bgstack");
@@ -353,12 +366,12 @@ function zcFindBackground(number) {
         requestAnimationFrame(function () { slideBox.className = "slide first show"; });
       });
     }
-    if (zcBgImgs.length === 2 && zcBgTimer === null) {
+    if (zcBgImgs.length === 2 && zcBgTimer === null && zcBgSeconds > 0) {
       zcBgTimer = setInterval(zcNextBackground, zcBgSeconds * 1000);
     }
     zcFindBackground(number + 1);
   };
-  probe.src = zcBgFolder + number + ".jpg";
+  probe.src = zpRoot + zcBgFolder + number + ".jpg";
 }
 /* old slide gets pushed out to the left while the new one slides in from the right */
 function zcNextBackground() {
@@ -379,21 +392,21 @@ zcFindBackground(1);
 /* game modes cycle on their own, the loading screen can't be clicked in game */
 var zcModeSlides = [];
 var zcModeCount = 0;
-for (var g = 0; g < zcModeGroups.length; g++) {
-  for (var m = 0; m < zcModeGroups[g].modes.length; m++) {
-    var modeInfo = zcModeGroups[g].modes[m];
+for (var g = 0; g < zcModeGroups2.length; g++) {
+  for (var m = 0; m < zcModeGroups2[g].modes.length; m++) {
+    var modeInfo = zcModeGroups2[g].modes[m];
     zcModeCount++;
-    zcModeSlides.push({ group: zcModeGroups[g].group, mode: modeInfo, sub: null, number: zcModeCount });
+    zcModeSlides.push({ group: zcModeGroups2[g].group, mode: modeInfo, sub: null, number: zcModeCount });
     if (modeInfo.subs) {
       for (var c = 0; c < modeInfo.subs.length; c++) {
-        zcModeSlides.push({ group: zcModeGroups[g].group, mode: modeInfo, sub: modeInfo.subs[c], number: zcModeCount });
+        zcModeSlides.push({ group: zcModeGroups2[g].group, mode: modeInfo, sub: modeInfo.subs[c], number: zcModeCount });
       }
     }
   }
 }
 var zcModeSlideBox = document.getElementById("modeslide");
 var zcModeAt = 0;
-while (true) {
+while (zcModeSlides.length > 0) {
   zcModeAt = Math.floor(Math.random() * zcModeSlides.length);
   if (zcModeSlides[zcModeAt].sub === null) break;
 }
@@ -426,8 +439,10 @@ function zcNextMode() {
     setTimeout(zcNextMode, zcModeWait(zcModeSlides[zcModeAt]));
   }, 400);
 }
-zcFillMode(zcModeSlides[zcModeAt]);
-setTimeout(zcNextMode, zcModeWait(zcModeSlides[zcModeAt]));
+if (zcModeSlides.length > 0) {
+  zcFillMode(zcModeSlides[zcModeAt]);
+  setTimeout(zcNextMode, zcModeWait(zcModeSlides[zcModeAt]));
+}
 
 /* map picture: maps/<map>.jpg or .png in this repo, then the game's own map thumbnail */
 var zcMapPic = document.getElementById("mappic");
@@ -442,7 +457,9 @@ function zcShowMap(mapName) {
   document.getElementById("mapname").textContent = mapName;
   var safeName = encodeURIComponent(mapName);
   zcMapPic.hidden = true;
-  zcMapTries = ["maps/" + safeName + ".jpg", "maps/" + safeName + ".png", "asset://garrysmod/maps/thumb/" + safeName + ".png"];
+  if (!zpPanelOn("mapPicture")) { zcMapTries = []; return; }
+  var picFolder = zpRoot + zpPick(zpConfig.mapPictures, "maps/");
+  zcMapTries = [picFolder + safeName + ".jpg", picFolder + safeName + ".png", "asset://garrysmod/maps/thumb/" + safeName + ".png"];
   zcTryMapPic();
 }
 
@@ -458,7 +475,7 @@ function zcSteamText(steamId) {
 }
 var zcJoinStart = Date.now();
 function zcShowMe(steamId) {
-  if (!steamId) return;
+  if (!steamId || !zpPanelOn("player")) return;
   document.getElementById("mesteam").textContent = zcSteamText(steamId);
   document.getElementById("me").hidden = false;
 }
@@ -469,8 +486,9 @@ setInterval(function () {
 }, 1000);
 
 var zcFactBox = document.getElementById("fact");
-var zcFactIndex = Math.floor(Math.random() * zcFacts.length);
+var zcFactIndex = Math.floor(Math.random() * Math.max(1, zcFacts.length));
 function zcNextFact() {
+  if (zcFacts.length === 0) return;
   zcFactBox.className = "fade";
   setTimeout(function () {
     zcFactBox.textContent = zcFacts[zcFactIndex];
@@ -478,8 +496,10 @@ function zcNextFact() {
     zcFactBox.className = "";
   }, 400);
 }
-zcFactBox.textContent = zcFacts[zcFactIndex];
-zcFactIndex = (zcFactIndex + 1) % zcFacts.length;
+if (zcFacts.length > 0) {
+  zcFactBox.textContent = zcFacts[zcFactIndex];
+  zcFactIndex = (zcFactIndex + 1) % zcFacts.length;
+}
 setInterval(zcNextFact, 8000);
 
 var zcRing = document.getElementById("done");
@@ -520,6 +540,7 @@ function zcHitZ() {
     zcZRing.classList.toggle("rainbowed", zcRainbow);
     if (zcRainbow) {
       zcChime();
+      if (zpConfig.arcade === false) return;
       setTimeout(zcOpenSnake, 700);
     }
   }
@@ -564,7 +585,7 @@ var zcFakeFiles = ["metrocop_gear.mdl", "ambient3.mp3", "stalker_vignette.vtf", 
 var zcFakeStatus = ["Retrieving server info", "Workshop complete", "Downloading files", "Loading resources", "Starting Lua", "Sending client info"];
 setTimeout(function () {
   if (zcInGame) return;
-  document.getElementById("server").textContent = "Server name";
+  document.getElementById("server").textContent = zpPick(zpConfig.serverName, "") || "Server name";
   zcShowMap("zb_downtown");
   zcShowMe("76561197960287930");
   var tick = 0;

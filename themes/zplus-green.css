@@ -1,0 +1,20 @@
+/* Z+ green */
+:root {
+  --panel: rgba(18, 28, 22, 0.86);
+  --panel-2: rgba(255, 255, 255, 0.04);
+  --panel-solid: rgba(14, 22, 17, 0.97);
+  --edge: rgba(25, 160, 70, 0.94);
+  --red: #1fc456;
+  --red-dark: #0a4a1e;
+  --hot: #52e283;
+  --glow: rgba(30, 200, 90, 0.6);
+  --hover: rgba(20, 125, 55, 0.3);
+  --active: rgba(20, 125, 55, 0.6);
+  --pick: rgba(20, 125, 55, 0.8);
+  --tab-mark: #4cf285;
+  --text: #eff5f0;
+  --dim: #a9b8ad;
+  --faint: rgba(239, 245, 240, 0.5);
+  --bg: #09100b;
+  --shade-rgb: 6, 12, 8;
+}

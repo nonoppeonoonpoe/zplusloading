@@ -1,0 +1,20 @@
+/* Z+ cyan */
+:root {
+  --panel: rgba(18, 26, 30, 0.86);
+  --panel-2: rgba(255, 255, 255, 0.04);
+  --panel-solid: rgba(14, 20, 24, 0.97);
+  --edge: rgba(0, 165, 195, 0.94);
+  --red: #00b8d9;
+  --red-dark: #004a58;
+  --hot: #3fd8f0;
+  --glow: rgba(0, 195, 230, 0.6);
+  --hover: rgba(0, 120, 145, 0.3);
+  --active: rgba(0, 120, 145, 0.6);
+  --pick: rgba(0, 120, 145, 0.8);
+  --tab-mark: #3be3ff;
+  --text: #eef5f6;
+  --dim: #a7b6ba;
+  --faint: rgba(238, 245, 246, 0.5);
+  --bg: #091014;
+  --shade-rgb: 6, 11, 14;
+}
