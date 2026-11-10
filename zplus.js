@@ -76,7 +76,7 @@ function zpStart() {
     for (var settingKey in seasonSettings) zpConfig[settingKey] = seasonSettings[settingKey];
     if (zpSeason.addFacts && zpSeason.addFacts.length) zpConfig.facts = (zpConfig.facts || []).concat(zpSeason.addFacts);
   }
-  if (zpConfig.lights || zpConfig.snow) {
+  if (zpConfig.lights || zpConfig.snow || zpConfig.logoStyle === "snow") {
     document.write('<link rel="stylesheet" href="' + zpRoot + 'decor.css">');
     document.addEventListener("DOMContentLoaded", zpDecorate);
   }
@@ -110,6 +110,7 @@ function zpFillLogo(logoBox) {
     logoBox.className = logoBox.className + " haspic";
     return;
   }
+  if (zpConfig.logoStyle === "snow") logoBox.className = logoBox.className + " snowlogo";
   var logoParts = [["z", zpPick(logoInfo.accent, "")], ["c", zpPick(logoInfo.main, "")], ["plus", zpPick(logoInfo.plus, "")]];
   for (var p = 0; p < logoParts.length; p++) {
     if (logoParts[p][1] === "") continue;
