@@ -5,7 +5,7 @@ Z-City+ loading screen and MOTD. Click the spinning Z!
 1. Fork this repo and turn on GitHub Pages (Settings > Pages, branch `main`). Any static web host works too.
 2. Edit `config.js`. Everything the two pages show comes from there: logo, theme, colors, fonts, facts, game modes, which panels show, and every MOTD tab.
 3. Put your backgrounds in `bg/` as `1.jpg`, `2.jpg`, `3.jpg`... (no gaps, jpg only).
-4. In `server.cfg`: `sv_loadingurl "https://<you>.github.io/zplusloading/"`.
+4. In `server.cfg`: `sv_loadingurl "https://<you>.github.io/zplusloading/?steamid=%s"` (`%s` becomes the joining player's SteamID, so their card can load right away).
 5. The MOTD lives at `.../zplusloading/motd/`.
 
 `configs/example-plain.js` is a config for a server that isn't running Z-City (no modes, no arcade, its own tabs). Try it with `?config=configs/example-plain.js`.
@@ -28,7 +28,7 @@ Put `maps/<mapname>.jpg` (or .png) here, 16:9. Without one the page tries the ga
 
 ## Stats API
 
-`worker/` has the Cloudflare Worker for player stats and live server info, see `worker/README.md`.
+`worker/` has the Cloudflare Worker for player stats and live server info, see `worker/README.md`. Put its address in `config.js` as `api:` and the loading screen shows a "Right now" panel and the joining player's card (level, title and the stats listed in `playerCardStats`). The addon's `zplus_api_url` and `zplus_api_key` settings keep it filled.
 
 ## GMod browser notes
 

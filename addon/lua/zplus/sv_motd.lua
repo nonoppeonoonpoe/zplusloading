@@ -21,7 +21,7 @@ local function zplusRulesRead(ply)
 	return readVersion >= rulesVersionCvar:GetInt()
 end
 
-local function zplusServerStatus()
+function ZPlus.BuildStatus()
 	local humanCount = #player.GetHumans()
 	local botCount = #player.GetBots()
 	local onlineList = {}
@@ -55,7 +55,7 @@ local function zplusSendMotd(ply, showRulesButton)
 
 			local motdData = {
 				player = cardInfo,
-				server = zplusServerStatus(),
+				server = ZPlus.BuildStatus(),
 				leaderboard = topList or {},
 				rulesButton = showRulesButton
 			}

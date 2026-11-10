@@ -151,12 +151,26 @@ body { background: var(--bg); color: var(--text); font-family: var(--ui); overfl
 #fact { font-size: 18px; line-height: 1.35; min-height: 1.35em; transition: opacity 0.4s; }
 #fact.fade { opacity: 0; }
 
-.modes {
-  position: fixed; z-index: 3;
+.rightcol {
+  position: fixed; z-index: 3; display: flex; flex-direction: column; gap: 12px;
   top: max(20px, calc(env(safe-area-inset-top, 0px) + 12px));
   right: max(20px, calc(env(safe-area-inset-right, 0px) + 12px));
-  width: 360px; max-width: calc(100vw - 32px); padding: 12px 16px 14px;
+  width: 360px; max-width: calc(100vw - 32px);
 }
+.modes { padding: 12px 16px 14px; }
+.live { padding: 12px 16px 14px; }
+.live .head { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); }
+.live .head .age { color: var(--dim); letter-spacing: 0.06em; text-transform: none; }
+.live .row { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; margin-top: 6px; color: var(--dim); }
+.live .row b { color: var(--text); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.live .names { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--dim); }
+.live .names b { color: var(--text); font-weight: 600; }
+.live .off { margin-top: 6px; font-size: 14px; color: var(--dim); }
+.me .myname { font-size: 18px; font-weight: 700; color: var(--text); }
+.me .mytitle { font-style: italic; color: var(--hot); }
+.me .mylevel { margin-top: 2px; }
+.me .mystats { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 4px; }
+.me .avatar { float: left; width: 48px; height: 48px; margin: 2px 10px 0 0; border: 1.5px solid var(--edge); }
 .modes .head { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); }
 .modes .head .num { color: var(--dim); letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
 .modes .slide { transition: opacity 0.4s ease; }
@@ -217,7 +231,7 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
 
 @media (max-width: 760px) {
   .info { max-width: none; right: max(16px, env(safe-area-inset-right, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); top: 112px; align-items: center; text-align: center; }
-  .modes { display: none; }
+  .rightcol { display: none; }
   .mapcard .pic { margin-left: auto; margin-right: auto; }
   .bottom { width: calc(100vw - 32px); bottom: 140px; }
   .loader { left: 50%; transform: translateX(-50%); }
@@ -253,6 +267,7 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
   </div>
   <div class="me panel" id="me" hidden>
     <div class="label">You</div>
+    <div id="mecard" hidden></div>
     <div>SteamID <b id="mesteam"></b></div>
     <div>Joining for <b id="metime">0:00</b></div>
   </div>
@@ -269,6 +284,7 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
   </div>
 </main>
 
+<div class="rightcol">
 <section class="modes panel" id="modes" aria-live="polite">
   <div class="head"><span id="modeshead">Game modes</span><span class="num" id="modecount"></span></div>
   <div class="slide" id="modeslide">
@@ -279,6 +295,11 @@ body.arcadeopen .panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
     <div class="desc" id="modedesc"></div>
   </div>
 </section>
+<section class="live panel" id="live" hidden>
+  <div class="head"><span id="livehead">Right now</span><span class="age" id="liveage"></span></div>
+  <div id="livebody"></div>
+</section>
+</div>
 
 <div class="bottom">
   <div class="status" id="statusline"><span id="status">Retrieving server info</span> <span class="count" id="sub"></span></div>
@@ -478,7 +499,133 @@ function zcShowMe(steamId) {
   if (!steamId || !zpPanelOn("player")) return;
   document.getElementById("mesteam").textContent = zcSteamText(steamId);
   document.getElementById("me").hidden = false;
+  zcLoadCard(String(steamId));
 }
+
+/* stats api (worker/), only used when config.js has an api address */
+var zcApiBase = zpPick(zpConfig.api, "");
+if (zcApiBase !== "" && zcApiBase.charAt(zcApiBase.length - 1) !== "/") zcApiBase = zcApiBase + "/";
+function zcGetJson(apiPath, whenDone) {
+  if (zcApiBase === "") { whenDone(null); return; }
+  var apiReq = new XMLHttpRequest();
+  var answered = false;
+  function finish(replyData) {
+    if (answered) return;
+    answered = true;
+    whenDone(replyData);
+  }
+  apiReq.open("GET", zcApiBase + apiPath, true);
+  apiReq.timeout = 5000;
+  apiReq.onload = function () {
+    if (apiReq.status !== 200) { finish(null); return; }
+    try { finish(JSON.parse(apiReq.responseText)); } catch (err) { finish(null); }
+  };
+  apiReq.onerror = function () { finish(null); };
+  apiReq.ontimeout = function () { finish(null); };
+  apiReq.send();
+}
+function zcSafe(rawValue) {
+  var holderBox = document.createElement("div");
+  holderBox.textContent = rawValue === undefined || rawValue === null ? "" : String(rawValue);
+  return holderBox.innerHTML;
+}
+function zcClock(totalSecs) {
+  totalSecs = Math.max(0, Math.floor(totalSecs || 0));
+  var leftOver = totalSecs % 60;
+  return Math.floor(totalSecs / 60) + ":" + (leftOver < 10 ? "0" : "") + leftOver;
+}
+
+var zcCardAsked = "";
+function zcShowCard(cardInfo, avatarUrl) {
+  var cardBox = document.getElementById("mecard");
+  var cardHtml = "";
+  if (avatarUrl) cardHtml += '<img class="avatar" alt="" src="' + zcSafe(avatarUrl) + '">';
+  cardHtml += '<div class="myname">' + zcSafe(cardInfo.name) + "</div>";
+  if (cardInfo.title) cardHtml += '<div class="mytitle"' + (cardInfo.titleColor ? ' style="color:' + zcSafe(cardInfo.titleColor) + '"' : "") + ">" + zcSafe(cardInfo.title) + "</div>";
+  if (cardInfo.level !== undefined) {
+    cardHtml += '<div class="mylevel">Level <b>' + zcSafe(cardInfo.level) + "</b>";
+    if (cardInfo.prestige) cardHtml += " &middot; Prestige <b>" + zcSafe(cardInfo.prestige) + "</b>";
+    cardHtml += "</div>";
+  }
+  var wantedStats = zpConfig.playerCardStats || [];
+  var statList = cardInfo.stats || [];
+  var statsHtml = "";
+  for (var ws = 0; ws < wantedStats.length; ws++) {
+    for (var cs = 0; cs < statList.length; cs++) {
+      if (statList[cs].label === wantedStats[ws]) statsHtml += "<span>" + zcSafe(statList[cs].label) + " <b>" + zcSafe(statList[cs].value) + "</b></span>";
+    }
+  }
+  if (statsHtml !== "") cardHtml += '<div class="mystats">' + statsHtml + "</div>";
+  cardBox.innerHTML = cardHtml;
+  cardBox.hidden = false;
+}
+function zcLoadCard(steamId) {
+  if (zcApiBase === "" || zcCardAsked === steamId || !/^\d{17}$/.test(steamId)) return;
+  zcCardAsked = steamId;
+  zcGetJson("player/" + steamId, function (replyData) {
+    if (!replyData) return;
+    if (replyData.found && replyData.card) {
+      zcShowCard(replyData.card, replyData.avatar);
+    } else {
+      var welcomeBox = document.getElementById("mecard");
+      welcomeBox.innerHTML = '<div class="myname">' + zcSafe(zpPick(zpConfig.newPlayerText, "First time here? Welcome!")) + "</div>";
+      welcomeBox.hidden = false;
+    }
+  });
+}
+
+var zcRoundEnd = 0;
+function zcShowLive(replyData) {
+  var liveBox = document.getElementById("live");
+  var liveBody = document.getElementById("livebody");
+  if (!replyData || !replyData.found || !replyData.status) {
+    if (!liveBox.hidden) liveBody.innerHTML = '<div class="off">Live info unavailable right now</div>';
+    return;
+  }
+  var liveInfo = replyData.status;
+  if (replyData.age > zpPick(zpConfig.liveMaxAge, 120)) {
+    liveBody.innerHTML = '<div class="off">Live info unavailable right now</div>';
+    document.getElementById("liveage").textContent = "";
+    liveBox.hidden = false;
+    zcRoundEnd = 0;
+    return;
+  }
+  var liveHtml = '<div class="row">Players <b>' + zcSafe(liveInfo.players) + " / " + zcSafe(liveInfo.maxPlayers) + (liveInfo.bots ? " + " + zcSafe(liveInfo.bots) + " bots" : "") + "</b></div>";
+  if (liveInfo.mode) liveHtml += '<div class="row">Mode <b>' + zcSafe(liveInfo.mode) + (liveInfo.subtype ? " &middot; " + zcSafe(liveInfo.subtype) : "") + "</b></div>";
+  if (liveInfo.roundState) liveHtml += '<div class="row">Round' + (liveInfo.round ? " " + zcSafe(liveInfo.round) : "") + ' <b><span>' + zcSafe(liveInfo.roundState) + '</span><span id="livetime"></span></b></div>';
+  var onlineList = liveInfo.online || [];
+  if (onlineList.length > 0) {
+    var nameBits = [];
+    var nameLimit = zpPick(zpConfig.liveNames, 8);
+    for (var on = 0; on < onlineList.length && on < nameLimit; on++) {
+      nameBits.push("<b>" + zcSafe(onlineList[on].name) + "</b>" + (onlineList[on].level !== undefined ? " " + zcSafe(onlineList[on].level) : ""));
+    }
+    var moreCount = onlineList.length - nameBits.length;
+    liveHtml += '<div class="names">' + nameBits.join(", ") + (moreCount > 0 ? " and " + moreCount + " more" : "") + "</div>";
+  }
+  liveBody.innerHTML = liveHtml;
+  zcRoundEnd = liveInfo.timeLeft > 0 ? Date.now() + (liveInfo.timeLeft - (replyData.age || 0)) * 1000 : 0;
+  zcLiveAge = Date.now() - (replyData.age || 0) * 1000;
+  zcTickLive();
+  liveBox.hidden = false;
+}
+var zcLiveAge = 0;
+function zcTickLive() {
+  var timeBox = document.getElementById("livetime");
+  if (timeBox) timeBox.textContent = zcRoundEnd > Date.now() ? " \u00b7 " + zcClock((zcRoundEnd - Date.now()) / 1000) + " left" : "";
+  if (zcLiveAge > 0) document.getElementById("liveage").textContent = "updated " + Math.floor((Date.now() - zcLiveAge) / 1000) + "s ago";
+}
+setInterval(zcTickLive, 1000);
+function zcLoadLive() {
+  zcGetJson("server", zcShowLive);
+}
+if (zcApiBase !== "" && zpPanelOn("live")) {
+  document.getElementById("livehead").textContent = zpPick(zpConfig.liveTitle, "Right now");
+  zcLoadLive();
+  setInterval(zcLoadLive, Math.max(5, zpPick(zpConfig.apiRefresh, 15)) * 1000);
+}
+var zcUrlSteamId = zpParam("steamid");
+if (/^\d{17}$/.test(zcUrlSteamId)) zcShowMe(zcUrlSteamId);
 setInterval(function () {
   var secs = Math.floor((Date.now() - zcJoinStart) / 1000);
   var restSecs = secs % 60;
@@ -587,7 +734,7 @@ setTimeout(function () {
   if (zcInGame) return;
   document.getElementById("server").textContent = zpPick(zpConfig.serverName, "") || "Server name";
   zcShowMap("zb_downtown");
-  zcShowMe("76561197960287930");
+  if (zcUrlSteamId === "") zcShowMe("76561197960287930");
   var tick = 0;
   zcFilesTotal = 186; zcFilesNeeded = 186;
   var fakeLoop = setInterval(function () {
