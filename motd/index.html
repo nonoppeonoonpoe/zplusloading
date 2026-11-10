@@ -11,20 +11,36 @@
   --panel: rgba(25, 25, 30, 0.88);
   --panel-2: rgba(255, 255, 255, 0.04);
   --edge: rgba(155, 0, 0, 0.94);
-  --line: rgba(255, 255, 255, 0.08);
   --red: #c80000;
   --hot: #e23b3b;
   --text: #f2eeee;
   --dim: #b4adad;
   --ui: "Bahnschrift", "Barlow Semi Condensed", "Arial Narrow", sans-serif;
   --logo: "Russo One", "Bahnschrift", "Arial Black", sans-serif;
+  --bg: #0b0b0e;
+  --panel-solid: rgba(18, 18, 22, 0.97);
+  --red-dark: #5a0000;
+  --glow: rgba(200, 0, 0, 0.6);
+  --hover: rgba(150, 0, 0, 0.3);
+  --active: rgba(150, 0, 0, 0.6);
+  --pick: rgba(150, 0, 0, 0.75);
+  --tab-mark: #ff3b3b;
+  --bind: #e8b04a;
+  --bind-line: rgba(232, 176, 74, 0.5);
+  --logo-main: #ffffff;
+  --line: rgba(255, 255, 255, 0.08);
+  --chip: rgba(255, 255, 255, 0.05);
+  --chip-line: rgba(255, 255, 255, 0.13);
+  --faint: rgba(242, 238, 238, 0.5);
+  --shadow: rgba(0, 0, 0, 0.8);
+  --shade-rgb: 8, 8, 10;
   color-scheme: dark;
 }
 html, body { height: 100%; margin: 0; }
-body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-size: 16px; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--ui); font-size: 16px; overflow: hidden; }
 [hidden] { display: none !important; }
 
-.bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: #0b0b0e center / cover no-repeat; filter: blur(6px) brightness(0.45); transform: scale(1.05); }
+.bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: var(--bg) center / cover no-repeat; filter: blur(6px) brightness(0.45); transform: scale(1.05); }
 
 .shell {
   position: relative; z-index: 1; height: 100%; box-sizing: border-box;
@@ -51,15 +67,15 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
   text-align: left; font: 700 16px var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim);
   background: none; border: 0; border-left: 3px solid transparent; padding: 12px 18px; cursor: pointer; transition: background 0.2s, color 0.2s;
 }
-.tabs button:hover, .tabs button:focus-visible { color: var(--text); background: rgba(150,0,0,0.25); outline: none; }
-.tabs button.on { color: var(--text); background: rgba(150,0,0,0.55); border-left-color: #ff3b3b; }
+.tabs button:hover, .tabs button:focus-visible { color: var(--text); background: var(--hover); outline: none; }
+.tabs button.on { color: var(--text); background: var(--active); border-left-color: var(--tab-mark); }
 
 .pane { overflow-y: auto; padding: 22px 26px 30px; min-width: 0; }
 .page { animation: pagein 0.3s ease; }
 @keyframes pagein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .page h2 { font-family: var(--logo); font-weight: 400; font-size: 26px; transform: skewX(-8deg); margin: 0 0 4px; letter-spacing: 0.03em; }
 .lede { color: var(--dim); font-size: 17px; margin: 0 0 20px; max-width: 80ch; line-height: 1.45; }
-.ph { display: inline-block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #0b0b0e; background: #e8b04a; padding: 2px 7px; margin-left: 10px; vertical-align: 3px; transform: none; font-family: var(--ui); font-weight: 700; }
+.ph { display: inline-block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bg); background: var(--bind); padding: 2px 7px; margin-left: 10px; vertical-align: 3px; transform: none; font-family: var(--ui); font-weight: 700; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
 .card { background: var(--panel-2); border: 1px solid var(--line); padding: 14px 16px; }
@@ -77,12 +93,12 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
 .keygroup { margin-bottom: 22px; }
 .keygroup h3 { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hot); margin: 0 0 10px; font-weight: 700; }
 .key { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: center; padding: 8px 10px; background: var(--panel-2); border: 1px solid var(--line); }
-.key kbd { justify-self: start; font: 700 14px var(--ui); letter-spacing: 0.04em; color: var(--text); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.22); border-bottom-width: 3px; padding: 4px 9px; white-space: nowrap; }
-.key kbd.bind { color: #e8b04a; border-color: rgba(232,176,74,0.5); }
+.key kbd { justify-self: start; font: 700 14px var(--ui); letter-spacing: 0.04em; color: var(--text); background: var(--line); border: 1px solid var(--chip-line); border-bottom-width: 3px; padding: 4px 9px; white-space: nowrap; }
+.key kbd.bind { color: var(--bind); border-color: var(--bind-line); }
 .key span { color: var(--dim); font-size: 15px; line-height: 1.35; }
 .key span b { color: var(--text); font-weight: 600; }
 .note { color: var(--dim); font-size: 14px; margin: 4px 0 0; }
-.note kbd { font: 700 12px var(--ui); color: #e8b04a; border: 1px solid rgba(232,176,74,0.5); padding: 1px 6px; }
+.note kbd { font: 700 12px var(--ui); color: var(--bind); border: 1px solid var(--bind-line); padding: 1px 6px; }
 
 /* modes */
 .modewrap { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
@@ -92,8 +108,8 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
   width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 10px;
   font: 600 16px var(--ui); color: var(--text); background: none; border: 0; border-top: 1px solid var(--line); padding: 9px 14px; cursor: pointer; transition: background 0.2s;
 }
-.modelist button:hover, .modelist button:focus-visible { background: rgba(150,0,0,0.35); outline: none; }
-.modelist button.on { background: rgba(150,0,0,0.6); }
+.modelist button:hover, .modelist button:focus-visible { background: var(--hover); outline: none; }
+.modelist button.on { background: var(--active); }
 .modelist .kind { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); align-self: center; white-space: nowrap; }
 .modelist .subcount { color: var(--hot); margin-right: 8px; }
 .modelist button.on .subcount { color: var(--text); }
@@ -103,20 +119,26 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
 .subs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .subs button {
   font: 600 13px var(--ui); letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--dim); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); padding: 6px 12px; cursor: pointer;
+  color: var(--dim); background: var(--chip); border: 1px solid var(--chip-line); padding: 6px 12px; cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
-.subs button:hover, .subs button:focus-visible { color: var(--text); border-color: var(--edge); background: rgba(150,0,0,0.3); outline: none; }
-.subs button.pick { color: var(--text); background: rgba(150,0,0,0.75); border-color: var(--edge); }
+.subs button:hover, .subs button:focus-visible { color: var(--text); border-color: var(--edge); background: var(--hover); outline: none; }
+.subs button.pick { color: var(--text); background: var(--pick); border-color: var(--edge); }
 #modedesc { font-size: 20px; line-height: 1.5; max-width: 60ch; margin: 0; transition: opacity 0.18s; }
 #modedesc.swap { opacity: 0; }
 .detail .subnote { margin-top: 18px; color: var(--dim); font-size: 14px; }
 
 .links { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 .links .card a { color: var(--text); }
-.slot { display: inline-block; margin-top: 8px; font-family: Consolas, "Courier New", monospace; font-size: 13px; color: #e8b04a; border: 1px dashed rgba(232,176,74,0.6); padding: 4px 8px; }
+.go { display: inline-block; margin-top: 10px; font: 700 13px var(--ui); letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); text-decoration: none; border: 1.5px solid var(--edge); padding: 6px 12px; }
+.go:hover, .go:focus-visible { background: var(--active); outline: none; }
+.custom { line-height: 1.5; color: var(--dim); max-width: 80ch; }
+.custom a { color: var(--hot); }
+.logo.haspic { transform: none; }
+.logo .logoimg { display: block; max-height: 56px; }
+.slot { display: inline-block; margin-top: 8px; font-family: Consolas, "Courier New", monospace; font-size: 13px; color: var(--bind); border: 1px dashed var(--bind-line); padding: 4px 8px; }
 
-.closehint { position: fixed; z-index: 2; left: 50%; bottom: 8px; white-space: nowrap; transform: translateX(-50%); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(242,238,238,0.45); }
+.closehint { position: fixed; z-index: 2; left: 50%; bottom: 8px; white-space: nowrap; transform: translateX(-50%); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
 
 @media (max-width: 760px) {
   body { overflow: auto; }
@@ -124,7 +146,7 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
   .body { grid-template-columns: minmax(0, 1fr); }
   .tabs { flex-direction: row; overflow-x: auto; padding: 0; }
   .tabs button { border-left: 0; border-bottom: 3px solid transparent; white-space: nowrap; padding: 12px 14px; }
-  .tabs button.on { border-bottom-color: #ff3b3b; }
+  .tabs button.on { border-bottom-color: var(--tab-mark); }
   .headtext { border-left: 0; padding-left: 0; }
   .modewrap { grid-template-columns: minmax(0, 1fr); }
   .detail { position: static; }
@@ -137,6 +159,10 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
   #modedesc, .tabs button { transition: none; }
 }
 </style>
+<script src="../modes.js"></script>
+<script src="../config.js"></script>
+<script src="../zplus.js"></script>
+<script>zpStart();</script>
 </head>
 <body>
 
@@ -144,164 +170,26 @@ body { background: #0b0b0e; color: var(--text); font-family: var(--ui); font-siz
 
 <div class="shell">
   <header class="head panel">
-    <div class="logo"><span class="z">Z-</span>CITY<span class="plus">+</span></div>
+    <div class="logo" id="logo"></div>
     <div class="headtext">
-      <div class="welcome">Welcome to</div>
+      <div class="welcome" id="welcome">Welcome to</div>
       <div class="server" id="server">this server</div>
       <div class="map" id="mapline">map <b id="mapname"></b></div>
     </div>
   </header>
 
   <div class="body">
-    <nav class="tabs panel" id="tabs" aria-label="Sections">
-      <button type="button" data-page="start" class="on">Start here</button>
-      <button type="button" data-page="rules">Rules</button>
-      <button type="button" data-page="modes">Game modes</button>
-      <button type="button" data-page="controls">Controls</button>
-      <button type="button" data-page="survive">Staying alive</button>
-      <button type="button" data-page="progress">Progression</button>
-      <button type="button" data-page="links">Community</button>
-    </nav>
+    <nav class="tabs panel" id="tabs" aria-label="Sections"></nav>
 
-    <main class="pane panel" id="pane">
-
-      <section class="page" id="page-start">
-        <h2>Start here</h2>
-        <p class="lede">Z-City+ is a round-based gamemode. Every round picks a different mode, so one round you're hunting a murderer and the next you're holding off zombies or storming a building. Injuries are realistic, and most rounds give you one life.</p>
-        <div class="grid">
-          <div class="card"><div class="tag">Rounds</div><h3>A new mode every round</h3><p>When the round ends, the next mode is picked. Check the Game modes tab to see what each one asks of you. Players can vote on what comes next.</p></div>
-          <div class="card"><div class="tag">Your role</div><h3>Read the role screen</h3><p>At the start of each round a screen tells you your team, role and goal. Read it, because the goal changes from mode to mode.</p></div>
-          <div class="card"><div class="tag">Dead?</div><h3>Spectate and wait</h3><p>Dead players spectate until the next round. In some modes you can take over a bot or possess props while you wait.</p></div>
-          <div class="card"><div class="tag">Bots</div><h3>Bots fill the server</h3><p>Bots play every mode with you. Teammate bots follow orders from the radial menu and chat, like follow me, cover me, hold here or medic.</p></div>
-          <div class="card"><div class="tag">Menu</div><h3>Press Esc for the Z-City menu</h3><p>Settings, key binds, your character's appearance, achievements, stats and votes all live there.</p></div>
-          <div class="card"><div class="tag">Content</div><h3>Missing textures or errors?</h3><p>Subscribe to the server's workshop collection (see Community) so models and sounds load properly.</p></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-rules" hidden>
-        <h2>Rules <span class="ph">Placeholder</span></h2>
-        <p class="lede">Breaking these can get you kicked or banned. Staff have the final say.</p>
-        <ol class="rules">
-          <li><div><b>Try not to RDM</b><span>RDM is bound to happen (its gmod) but try not to make it a reoccuring event.</span></div></li>
-          <li><div><b>Keep it cool with everyone</b><span>You can fuck around with your friends, but if someone is asking you not to do something, then stop. Racism won't be tolerated.</span></div></li>
-          <li><div><b>Keep voice and chat usable</b><span>No micspamming or soundboards.</span></div></li>
-        </ol>
-      </section>
-
-      <section class="page" id="page-modes" hidden>
-        <h2>Game modes</h2>
-        <p class="lede">Pick a mode to read what it's about. Modes with a red number have subtypes that change the rules for that round.</p>
-        <div class="modewrap">
-          <div class="modelist" id="modelist"></div>
-          <div class="detail" id="detail">
-            <div class="kindbig" id="modekind"></div>
-            <h3 id="modename"></h3>
-            <div class="subs" id="modesubs"></div>
-            <p id="modedesc"></p>
-            <div class="subnote" id="subnote"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="page" id="page-controls" hidden>
-        <h2>Controls</h2>
-        <p class="lede">Keys in white are defaults. Keys in yellow aren't bound until you set them in <b>Esc &rsaquo; Binds</b>, so do that before your first round.</p>
-
-        <div class="keygroup">
-          <h3>Everyday</h3>
-          <div class="keys">
-            <div class="key"><kbd>Q</kbd><span><b>Radial menu.</b> Orders for bots, voice lines, drop items, put down carried people and more.</span></div>
-            <div class="key"><kbd>Tab</kbd><span><b>Scoreboard.</b> Players, levels, round history and a recap of how you died.</span></div>
-            <div class="key"><kbd>Esc</kbd><span><b>Z-City menu.</b> Settings, binds, appearance, achievements, stats and votes.</span></div>
-            <div class="key"><kbd>E</kbd><span><b>Use.</b> Doors, pick-ups, searching bodies, vehicles.</span></div>
-            <div class="key"><kbd>Shift</kbd><span><b>Sprint.</b> Stamina runs out, so pace yourself.</span></div>
-            <div class="key"><kbd>Alt + Enter</kbd><span><b>Whisper</b> in chat. Hold left Alt and press Enter.</span></div>
-          </div>
-        </div>
-
-        <div class="keygroup">
-          <h3>Bind these yourself</h3>
-          <div class="keys">
-            <div class="key"><kbd class="bind">Ragdoll</kbd><span><b>Go limp</b> on purpose, to dive, play dead or fall safely.</span></div>
-            <div class="key"><kbd class="bind">Lean</kbd><span><b>Lean left and right</b> around corners.</span></div>
-            <div class="key"><kbd class="bind">Kick</kbd><span><b>Kick</b> doors and people.</span></div>
-            <div class="key"><kbd class="bind">Zoom</kbd><span><b>Zoom in</b> while held.</span></div>
-            <div class="key"><kbd class="bind">Hold breath</kbd><span><b>Steady your aim</b> and avoid gas.</span></div>
-            <div class="key"><kbd class="bind">Drop weapon</kbd><span><b>Drop</b> what you're holding.</span></div>
-            <div class="key"><kbd class="bind">Free look</kbd><span><b>Look around</b> without turning your body.</span></div>
-            <div class="key"><kbd class="bind">Posture</kbd><span><b>Change how you hold your gun.</b></span></div>
-            <div class="key"><kbd class="bind">Laser</kbd><span><b>Toggle</b> a fitted laser.</span></div>
-            <div class="key"><kbd>B</kbd><span><b>Seatbelt</b> in vehicles. Without it, a bad crash throws you out.</span></div>
-          </div>
-        </div>
-
-        <div class="keygroup">
-          <h3>Situational</h3>
-          <div class="keys">
-            <div class="key"><kbd>Space</kbd><span><b>Break free</b> when someone carries you. Hurt players have to mash it.</span></div>
-            <div class="key"><kbd>G</kbd><span><b>Take over a bot</b> you're spectating.</span></div>
-            <div class="key"><kbd>V</kbd><span><b>Possess a prop</b> while dead and spectating.</span></div>
-            <div class="key"><kbd>F3 / C</kbd><span><b>Shop</b> in Trouble in Z-City.</span></div>
-            <div class="key"><kbd>F4</kbd><span><b>Change class</b> in Day of Defeat.</span></div>
-            <div class="key"><kbd>Alt + E</kbd><span><b>Quiet body search</b> in Trouble in Z-City. Hold walk while searching so nobody is told.</span></div>
-          </div>
-        </div>
-
-        <div class="keygroup">
-          <h3>Chat commands</h3>
-          <div class="keys">
-            <div class="key"><kbd>!zvote</kbd><span><b>Open the vote menu.</b></span></div>
-            <div class="key"><kbd>!votemode</kbd><span><b>Vote</b> on the next mode.</span></div>
-            <div class="key"><kbd>!yes / !no</kbd><span><b>Answer</b> a running vote.</span></div>
-            <div class="key"><kbd>!drop</kbd><span><b>Drop</b> your weapon.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="page" id="page-survive" hidden>
-        <h2>Staying alive</h2>
-        <p class="lede">There's no simple health bar to watch. Your body takes damage in parts, and what happens depends on where you were hit.</p>
-        <div class="grid">
-          <div class="card"><div class="tag">Bleeding</div><h3>Stop the bleeding first</h3><p>Wounds keep bleeding until you treat them. Bandages and other medical items are in your inventory or the shop. Lose too much blood and you pass out, then die.</p></div>
-          <div class="card"><div class="tag">Pain</div><h3>Pain knocks you down</h3><p>Too much pain and you collapse or pass out. Painkillers help you keep going.</p></div>
-          <div class="card"><div class="tag">Bones</div><h3>Broken legs, broken aim</h3><p>Broken legs slow you down and broken arms make aiming harder. Falls from high up can kill outright.</p></div>
-          <div class="card"><div class="tag">Ragdolls</div><h3>Getting knocked over</h3><p>Big hits and explosions can ragdoll you. While down you can grab things with your hands and get back up once you're able.</p></div>
-          <div class="card"><div class="tag">Help</div><h3>Carry the wounded</h3><p>Downed teammates can be dragged or carried to safety. Ask a bot to carry you from the radial menu if you're stuck.</p></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-progress" hidden>
-        <h2>Progression</h2>
-        <p class="lede">Everything you do counts toward your profile, whatever mode is on.</p>
-        <div class="grid">
-          <div class="card"><div class="tag">Levels</div><h3>Level up by playing</h3><p>Kills, wins, objectives and surviving all earn XP. Your level shows on the scoreboard.</p></div>
-          <div class="card"><div class="tag">Prestige</div><h3>Prestige and titles</h3><p>Hit the cap, prestige, and start again with something to show for it. Titles and name colors unlock along the way.</p></div>
-          <div class="card"><div class="tag">Dailies</div><h3>Daily challenges</h3><p>New challenges every day for bonus XP.</p></div>
-          <div class="card"><div class="tag">Modes</div><h3>Mode levels</h3><p>Each mode tracks its own level, so you can see what you're best at.</p></div>
-          <div class="card"><div class="tag">Achievements</div><h3>Achievements</h3><p>Some are obvious, some are hidden. Check Esc &rsaquo; Achievements.</p></div>
-          <div class="card"><div class="tag">Stats</div><h3>Your stats</h3><p>Kills, deaths, wins and more in Esc &rsaquo; Stats.</p></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-links" hidden>
-        <h2>Community</h2>
-        <p class="lede">Join the community, grab the content, and get in touch with staff.</p>
-        <div class="links">
-          <div class="card"><div class="tag">Discord</div><h3>Join the Discord</h3><p>Announcements, reports, appeals and finding people to play with.</p><span class="slot">add Discord link here</span></div>
-          <div class="card"><div class="tag">Workshop</div><h3>Workshop collection</h3><p>Subscribe so the server's models, sounds and maps are ready before you join.</p><span class="slot">add workshop link here</span></div>
-          <div class="card"><div class="tag">Staff</div><h3>Need an admin?</h3><p>Use <b>@</b> before a chat message to reach staff online, or report it in the Discord.</p></div>
-        </div>
-      </section>
-
-    </main>
+    <main class="pane panel" id="pane"></main>
   </div>
 </div>
 
-<div class="closehint">Close this window with the button below</div>
+<div class="closehint" id="closehint"></div>
 
-<script src="../modes.js"></script>
 <script>
-var zcBgImage = "../bg/1.jpg";
+var zcMotd = zpConfig.motd || {};
+var zcBgImage = zpRoot + zpPick(zcMotd.background, "bg/1.jpg");
 
 function zcParam(paramName) {
   var found = new RegExp("[?&]" + paramName + "=([^&#]*)").exec(window.location.search);
@@ -320,6 +208,79 @@ if (zcMapName !== "" && zcMapName.indexOf("%") !== 0) {
   document.getElementById("mapline").hidden = true;
 }
 
+zpFillLogo(document.getElementById("logo"));
+document.getElementById("welcome").textContent = zpPick(zcMotd.welcome, "Welcome to");
+document.getElementById("closehint").textContent = zpPick(zcMotd.closeHint, "");
+if (zcServerName === "" || zcServerName.indexOf("%") === 0) {
+  if (zpPick(zpConfig.serverName, "") !== "") document.getElementById("server").textContent = zpConfig.serverName;
+}
+
+/* pages and tabs are built from config.js */
+function zcMakeBox(tagName, boxClass, boxHtml) {
+  var newBox = document.createElement(tagName);
+  if (boxClass) newBox.className = boxClass;
+  if (boxHtml !== undefined) newBox.innerHTML = boxHtml;
+  return newBox;
+}
+function zcCardsHtml(cardList) {
+  var cardsHtml = "";
+  for (var ci = 0; ci < cardList.length; ci++) {
+    var oneCard = cardList[ci];
+    cardsHtml += '<div class="card">';
+    if (oneCard.tag) cardsHtml += '<div class="tag">' + oneCard.tag + "</div>";
+    cardsHtml += "<h3>" + zpPick(oneCard.title, "") + "</h3><p>" + zpPick(oneCard.text, "") + "</p>";
+    if (oneCard.url) cardsHtml += '<a class="go" href="' + String(oneCard.url).replace(/"/g, "&quot;") + '" target="_blank" rel="noopener">' + zpPick(oneCard.button, "Open") + "</a>";
+    cardsHtml += "</div>";
+  }
+  return cardsHtml;
+}
+var zcPageList = zcMotd.pages || [];
+var zcTabBar = document.getElementById("tabs");
+var zcPane = document.getElementById("pane");
+for (var pi = 0; pi < zcPageList.length; pi++) {
+  var pageInfo = zcPageList[pi];
+  var pageId = String(zpPick(pageInfo.id, "page" + pi)).replace(/[^A-Za-z0-9_\-]/g, "");
+  if (pageInfo.type === "modes" && zpModeGroups().length === 0) continue;
+  var pageBox = zcMakeBox("section", "page");
+  pageBox.id = "page-" + pageId;
+  var pageTitle = zpPick(pageInfo.title, pageInfo.tab);
+  var titleHtml = pageTitle;
+  if (pageInfo.badge) titleHtml += ' <span class="ph">' + pageInfo.badge + "</span>";
+  pageBox.appendChild(zcMakeBox("h2", "", titleHtml));
+  if (pageInfo.lede) pageBox.appendChild(zcMakeBox("p", "lede", pageInfo.lede));
+  if (pageInfo.type === "cards") {
+    pageBox.appendChild(zcMakeBox("div", "grid", zcCardsHtml(pageInfo.cards || [])));
+  } else if (pageInfo.type === "rules") {
+    var rulesHtml = "";
+    var ruleList = pageInfo.rules || [];
+    for (var ri = 0; ri < ruleList.length; ri++) {
+      rulesHtml += "<li><div><b>" + zpPick(ruleList[ri].title, "") + "</b><span>" + zpPick(ruleList[ri].text, "") + "</span></div></li>";
+    }
+    pageBox.appendChild(zcMakeBox("ol", "rules", rulesHtml));
+  } else if (pageInfo.type === "keys") {
+    var groupList = pageInfo.groups || [];
+    for (var gi = 0; gi < groupList.length; gi++) {
+      var keysHtml = "";
+      var keyList = groupList[gi].keys || [];
+      for (var ki = 0; ki < keyList.length; ki++) {
+        keysHtml += '<div class="key"><kbd' + (keyList[ki].unbound ? ' class="bind"' : "") + ">" + zpPick(keyList[ki].key, "") + "</kbd><span>" + zpPick(keyList[ki].text, "") + "</span></div>";
+      }
+      pageBox.appendChild(zcMakeBox("div", "keygroup", "<h3>" + zpPick(groupList[gi].title, "") + '</h3><div class="keys">' + keysHtml + "</div>"));
+    }
+  } else if (pageInfo.type === "modes") {
+    pageBox.appendChild(zcMakeBox("div", "modewrap", '<div class="modelist" id="modelist"></div><div class="detail" id="detail"><div class="kindbig" id="modekind"></div><h3 id="modename"></h3><div class="subs" id="modesubs"></div><p id="modedesc"></p><div class="subnote" id="subnote"></div></div>'));
+  } else if (pageInfo.type === "html") {
+    pageBox.appendChild(zcMakeBox("div", "custom", zpPick(pageInfo.html, "")));
+  }
+  pageBox.hidden = true;
+  zcPane.appendChild(pageBox);
+  var tabBtn = zcMakeBox("button");
+  tabBtn.type = "button";
+  tabBtn.setAttribute("data-page", pageId);
+  tabBtn.textContent = zpPick(pageInfo.tab, pageTitle);
+  zcTabBar.appendChild(tabBtn);
+}
+
 /* tabs */
 var zcTabBtns = document.querySelectorAll("#tabs button");
 function zcShowPage(pageName) {
@@ -333,9 +294,11 @@ function zcShowPage(pageName) {
 for (var tb = 0; tb < zcTabBtns.length; tb++) {
   zcTabBtns[tb].addEventListener("click", function () { zcShowPage(this.getAttribute("data-page")); });
 }
+if (zcTabBtns.length > 0) zcShowPage(zcTabBtns[0].getAttribute("data-page"));
 
 /* modes */
 var zcModeList = document.getElementById("modelist");
+var zcMotdModes = zpModeGroups();
 var zcModeBtns = [];
 function zcShowMode(modeInfo, modeBtn) {
   for (var b = 0; b < zcModeBtns.length; b++) zcModeBtns[b].className = "";
@@ -373,12 +336,12 @@ function zcShowMode(modeInfo, modeBtn) {
     })(choices[c], c === 0);
   }
 }
-for (var g = 0; g < zcModeGroups.length; g++) {
+for (var g = 0; zcModeList && g < zcMotdModes.length; g++) {
   var groupLabel = document.createElement("div");
   groupLabel.className = "group";
-  groupLabel.textContent = zcModeGroups[g].group;
+  groupLabel.textContent = zcMotdModes[g].group;
   zcModeList.appendChild(groupLabel);
-  for (var m = 0; m < zcModeGroups[g].modes.length; m++) {
+  for (var m = 0; m < zcMotdModes[g].modes.length; m++) {
     (function (modeInfo) {
       var modeBtn = document.createElement("button");
       modeBtn.type = "button";
@@ -398,10 +361,10 @@ for (var g = 0; g < zcModeGroups.length; g++) {
       modeBtn.addEventListener("click", function () { zcShowMode(modeInfo, modeBtn); });
       zcModeBtns.push(modeBtn);
       zcModeList.appendChild(modeBtn);
-    })(zcModeGroups[g].modes[m]);
+    })(zcMotdModes[g].modes[m]);
   }
 }
-zcModeBtns[0].click();
+if (zcModeBtns.length > 0) zcModeBtns[0].click();
 </script>
 </body>
 </html>

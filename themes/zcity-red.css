@@ -1,0 +1,20 @@
+/* Z-City red, the default look */
+:root {
+  --panel: rgba(25, 25, 30, 0.86);
+  --panel-2: rgba(255, 255, 255, 0.04);
+  --panel-solid: rgba(18, 18, 22, 0.97);
+  --edge: rgba(155, 0, 0, 0.94);
+  --red: #c80000;
+  --red-dark: #5a0000;
+  --hot: #e23b3b;
+  --glow: rgba(200, 0, 0, 0.6);
+  --hover: rgba(150, 0, 0, 0.3);
+  --active: rgba(150, 0, 0, 0.6);
+  --pick: rgba(150, 0, 0, 0.75);
+  --tab-mark: #ff3b3b;
+  --text: #f2eeee;
+  --dim: #b4adad;
+  --faint: rgba(242, 238, 238, 0.5);
+  --bg: #0b0b0e;
+  --shade-rgb: 8, 8, 10;
+}
